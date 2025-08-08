@@ -1,8 +1,8 @@
-# Grupo Rosso - Tienda de Accesorios Automotrices
+# Grupo Roso - Tienda de Accesorios Automotrices
 
 ## 🚗 Descripción
 
-Aplicación web moderna y elegante para **Grupo Rosso**, tienda especializada en accesorios automotrices de alta calidad. Desarrollada con Next.js 14+, React, TypeScript y Tailwind CSS, integrada completamente con Airtable como backend.
+Aplicación web moderna y elegante para **Grupo Roso**, tienda especializada en accesorios automotrices de alta calidad. Desarrollada con Next.js 14+, React, TypeScript y Tailwind CSS, integrada completamente con Airtable como backend.
 
 ## ✨ Características Principales
 
@@ -11,7 +11,7 @@ Aplicación web moderna y elegante para **Grupo Rosso**, tienda especializada en
 - **Sistema de Filtrado Inteligente**: Por categoría, marca, precio y disponibilidad
 - **Búsqueda Avanzada**: Con debounce para mejor rendimiento
 - **Carrito de Compras**: Gestión completa del estado con Zustand
-- **Navegación por Categorías y Marcas**: Páginas dinámicas para cada categoría/marca
+- **Filtros por Categoría y Marca**: Derivados directamente de la tabla Products (sin tablas dedicadas en el frontend)
 - **Páginas de Producto Detalladas**: Con galería de imágenes y productos relacionados
 - **SEO Optimizado**: Meta tags, Schema.org, sitemap automático
 
@@ -34,8 +34,8 @@ Aplicación web moderna y elegante para **Grupo Rosso**, tienda especializada en
 ### 1. Clonar e Instalar
 ```bash
 # Clonar el repositorio
-git clone https://github.com/grupo-rosso/website.git
-cd grupo-rosso
+git clone https://github.com/persibuloi/Grupo_Roso.git
+cd Grupo_Roso
 
 # Instalar dependencias
 pnpm install
@@ -49,36 +49,29 @@ cp .env.example .env.local
 # Editar con tus credenciales
 # Necesitarás:
 # - AIRTABLE_API_KEY: Tu API key de Airtable
-# - AIRTABLE_BASE_ID: app4xBwfGa1IwoCkr (ya configurado)
+# - AIRTABLE_BASE_ID: Tu Base ID de Airtable (ej: appXXXXXXXXXXXXXX)
 ```
 
 ### 3. Configurar Base de Datos Airtable
 
-La aplicación espera estas tablas en Airtable:
-
-#### Tabla `Categories`
-- `Name` (Single line text)
-- `Slug` (Single line text)
-- `Description` (Long text)
-
-#### Tabla `Brands`
-- `Name` (Single line text)
-- `Slug` (Single line text)
-- `Description` (Long text)
-- `Logo` (Attachment)
+La aplicación usa una sola tabla como fuente de verdad:
 
 #### Tabla `Products`
 - `Name` (Single line text)
-- `Slug` (Single line text)
 - `SKU` (Single line text)
 - `Description` (Long text)
-- `Price Retail` (Currency)
-- `Price Wholesale` (Currency)
+- `Price Retail` (Number/Currency)
+- `Price Wholesale` (Number/Currency)
 - `Stock` (Number)
 - `Active` (Checkbox)
-- `Category` (Link to Categories)
-- `Brand` (Link to Brands)
 - `Images` (Attachment)
+- `createdTime` (Date/Time)
+- `Categoria` (Lookup del campo Name desde el vínculo `Category`)
+- `Marca` (Lookup del campo Name desde el vínculo `Brand`)
+
+Notas:
+- El backend lee únicamente `Products` y usa los LOOKUPs `Categoria` y `Marca` para nombres y slugs.
+- Puedes mantener los campos vinculados `Category`/`Brand` si tu base ya los usa; el frontend no consulta esas tablas.
 
 ### 4. Ejecutar en Desarrollo
 ```bash
@@ -99,8 +92,8 @@ src/
 │   ├── (pages)/           # Rutas de la aplicación
 │   │   ├── catalogo/      # Página de catálogo con filtros
 │   │   ├── producto/[slug]/ # Páginas dinámicas de productos
-│   │   ├── categoria/[slug]/ # Páginas de categorías
-│   │   └── marca/[slug]/  # Páginas de marcas
+│   │   ├── catalogo/      # Página de catálogo con filtros (derivados de Products)
+│   │   └── producto/[slug]/ # Páginas dinámicas de productos
 │   ├── globals.css        # Estilos globales
 │   └── layout.tsx         # Layout principal
 ├── components/             # Componentes React
@@ -221,4 +214,4 @@ NODE_ENV=production
 
 ## 📄 Licencia
 
-Copyright © 2025 Grupo Rosso. Todos los derechos reservados.
+Copyright © 2025 Grupo Roso. Todos los derechos reservados.
