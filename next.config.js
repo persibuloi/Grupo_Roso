@@ -32,15 +32,12 @@ const nextConfig = {
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
   },
   
-  // Configuración experimental
-  experimental: {
-    // Habilitar modo de desarrollo turbo
-    turbo: {
-      rules: {
-        '*.svg': {
-          loaders: ['@svgr/webpack'],
-          as: '*.js',
-        },
+  // Configuración de Turbopack (reemplaza experimental.turbo)
+  turbopack: {
+    rules: {
+      '*.svg': {
+        loaders: ['@svgr/webpack'],
+        as: '*.js',
       },
     },
   },
@@ -97,8 +94,8 @@ const nextConfig = {
     removeConsole: process.env.NODE_ENV === 'production',
   },
   
-  // Configuración de output para estáticos
-  output: 'standalone',
+  // Evitar 'standalone' para prevenir errores de symlink en Windows
+  // output: 'standalone',
   
   // Configuración de env variables públicas
   env: {

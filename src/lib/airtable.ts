@@ -152,7 +152,11 @@ export async function getProducts(options: FilterOptions = {}): Promise<Product[
     return products;
     
   } catch (error) {
-    console.error('❌ Error DIRECTO:', error.message);
+    if (error instanceof Error) {
+      console.error('❌ Error DIRECTO:', error.message);
+    } else {
+      console.error('❌ Error DIRECTO (unknown):', error);
+    }
     return [];
   }
 }
