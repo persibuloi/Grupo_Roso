@@ -18,7 +18,7 @@ export default {
     },
     extend: {
       colors: {
-        // Paleta personalizada para Grupo Rosso
+        // Paleta personalizada para Grupo Roso
         anthracite: '#111111',
         rosso: '#C1121F',
         'gray-neutral': '#A0A0A0',

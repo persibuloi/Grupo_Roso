@@ -33,7 +33,7 @@ export default async function HomePage() {
             </div>
             <h1 className="text-4xl md:text-6xl font-bold text-white-soft mb-6">
               Bienvenido a{' '}
-              <span className="text-rosso">Grupo Rosso</span>
+              <span className="text-rosso">Grupo Roso</span>
             </h1>
             <p className="text-xl md:text-2xl text-gray-neutral mb-8 max-w-3xl mx-auto leading-relaxed">
               Tu tienda especializada en accesorios automotrices de alta calidad. 

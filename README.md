@@ -211,7 +211,67 @@ NODE_ENV=production
 2. Crear branch feature
 3. Commit cambios
 4. Crear Pull Request
-
+  
 ## 📄 Licencia
 
-Copyright © 2025 Grupo Roso. Todos los derechos reservados.
+Copyright 2025 Grupo Roso. Todos los derechos reservados.
+
+
+## 🧭 Guía de Deploy en Vercel (actualizada)
+
+Esta guía resume la configuración aplicada y cómo desplegar el proyecto en Vercel usando pnpm.
+
+- **Package manager**: pnpm (definido en `engines.pnpm` de `package.json`)
+- **Archivo `vercel.json`**: agregado para fijar comandos
+  - `installCommand`: `pnpm install`
+  - `buildCommand`: `pnpm run build`
+  - `outputDirectory`: `.next`
+- **Build local en Windows**: se deshabilitó `output: 'standalone'` en `next.config.js` para evitar errores de symlink (EPERM) en Windows.
+- **Turbopack**: migrado de `experimental.turbo` a `turbopack` para evitar deprecations.
+
+### Pasos en Vercel
+1. Conectar el repositorio `persibuloi/Grupo_Roso`.
+2. En Project Settings, confirmar:
+   - Package Manager: pnpm
+   - Build Command: `pnpm run build`
+   - Output Directory: `.next`
+3. Configurar variables de entorno (Production/Preview):
+   - `AIRTABLE_API_KEY`
+   - `AIRTABLE_BASE_ID`
+   - `AIRTABLE_CATEGORIES_TABLE` (opcional)
+   - `AIRTABLE_BRANDS_TABLE` (opcional)
+   - `AIRTABLE_PRODUCTS_TABLE` (opcional)
+4. Hacer push a `main` y verificar el deploy automático.
+
+
+## 🛠 Troubleshooting (build y deploy)
+
+- **Warning: multiple lockfiles**
+  - Causa: existía `C:\Users\USER\package-lock.json` fuera del repo.
+  - Solución: eliminar ese archivo para que Vercel y Next usen sólo `pnpm-lock.yaml` del proyecto.
+
+- **Windows EPERM symlink en build**
+  - Causa: `output: 'standalone'` genera symlinks en `.next/standalone`.
+  - Solución: comentar/retirar `output: 'standalone'` en `next.config.js` (ya aplicado).
+
+- **TypeScript: "'error' is of type 'unknown'"**
+  - Causa: uso de `error.message` en bloques `catch` sin narrow.
+  - Solución: verificar con `instanceof Error` antes de acceder a `.message` (aplicado en `src/lib/airtable.ts`).
+
+- **Propiedad global en `window`**
+  - Caso: `window.productGridDebugShown` en `ProductGrid`.
+  - Solución: se agregó `src/types/global.d.ts` y se incluyeron todos los `.d.ts` en `tsconfig.json`.
+
+
+## 📌 Notas técnicas recientes (08-08-2025)
+
+- `next.config.js`
+  - Migrado a `turbopack` y deshabilitado `standalone` para compatibilidad Windows.
+- `src/lib/airtable.ts`
+  - Manejo seguro de errores (`unknown`) en `catch`.
+- `tsconfig.json`
+  - Incluye `**/*.d.ts` para que el tipado global sea reconocido.
+- `src/types/global.d.ts`
+  - Extiende `window` con `productGridDebugShown`.
+- `vercel.json`
+  - Define comandos de instalación y build con pnpm.

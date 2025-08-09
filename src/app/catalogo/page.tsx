@@ -34,7 +34,7 @@ function CatalogoPageContent() {
       brand: searchParams.get('brand') || undefined,
       priceMin: searchParams.get('priceMin') ? Number(searchParams.get('priceMin')) : undefined,
       priceMax: searchParams.get('priceMax') ? Number(searchParams.get('priceMax')) : undefined,
-      inStock: searchParams.get('inStock') === '1',
+      inStock: searchParams.get('inStock') === '1', // Desmarcado por defecto, muestra todos los productos
       sortBy: (searchParams.get('sortBy') as FilterOptions['sortBy']) || 'newest',
       search: debouncedSearchTerm || undefined
     };

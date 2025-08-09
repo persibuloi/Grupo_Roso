@@ -7,32 +7,32 @@ import { Footer } from '@/components/layout/Footer';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Grupo Rosso - Accesorios Automotrices Premium',
+  title: 'Grupo Roso - Accesorios Automotrices Premium',
   description: 'Tienda especializada en accesorios automotrices de alta calidad. Encuentra filtros, sistemas de escape, tapetes, sistemas de audio y más para tu vehículo.',
   keywords: 'accesorios auto, filtros K&N, sistemas escape Borla, tapetes WeatherTech, audio Pioneer, tuning, performance',
-  authors: [{ name: 'Grupo Rosso' }],
+  authors: [{ name: 'Grupo Roso' }],
   creator: 'MiniMax Agent',
-  publisher: 'Grupo Rosso',
+  publisher: 'Grupo Roso',
   robots: 'index, follow',
   openGraph: {
     type: 'website',
     locale: 'es_NI',
     url: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
-    siteName: 'Grupo Rosso',
-    title: 'Grupo Rosso - Accesorios Automotrices Premium',
+    siteName: 'Grupo Roso',
+    title: 'Grupo Roso - Accesorios Automotrices Premium',
     description: 'Tienda especializada en accesorios automotrices de alta calidad.',
     images: [
       {
         url: '/images/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'Grupo Rosso - Accesorios Automotrices'
+        alt: 'Grupo Roso - Accesorios Automotrices'
       }
     ]
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Grupo Rosso - Accesorios Automotrices Premium',
+    title: 'Grupo Roso - Accesorios Automotrices Premium',
     description: 'Tienda especializada en accesorios automotrices de alta calidad.',
     images: ['/images/og-image.jpg']
   },

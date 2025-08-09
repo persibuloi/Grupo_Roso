@@ -23,14 +23,14 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
   
   if (!product) {
     return {
-      title: 'Producto no encontrado | Grupo Rosso'
+      title: 'Producto no encontrado | Grupo Roso'
     };
   }
 
   return {
     title: generateSEOTitle(product.name),
     description: generateMetaDescription(product.description),
-    keywords: `${product.name}, ${product.brand?.name || ''}, ${product.category?.name || ''}, accesorios auto, Grupo Rosso`,
+    keywords: `${product.name}, ${product.brand?.name || ''}, ${product.category?.name || ''}, accesorios auto, Grupo Roso`,
     openGraph: {
       title: product.name,
       description: generateMetaDescription(product.description),
@@ -72,7 +72,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
     sku: product.sku,
     brand: {
       '@type': 'Brand',
-      name: product.brand?.name || 'Grupo Rosso'
+      name: product.brand?.name || 'Grupo Roso'
     },
     category: product.category?.name,
     offers: {
@@ -82,7 +82,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
       availability: isOutOfStock ? 'https://schema.org/OutOfStock' : 'https://schema.org/InStock',
       seller: {
         '@type': 'Organization',
-        name: 'Grupo Rosso'
+        name: 'Grupo Roso'
       }
     },
     image: product.images || []

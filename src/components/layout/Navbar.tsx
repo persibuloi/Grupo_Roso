@@ -16,26 +16,7 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  {
-    label: 'Catálogo',
-    href: '/catalogo',
-    children: [
-      { label: 'Accesorios de Interior', href: '/categoria/accesorios-interior' },
-      { label: 'Accesorios de Exterior', href: '/categoria/accesorios-exterior' },
-      { label: 'Electrónicos', href: '/categoria/electronicos' },
-      { label: 'Performance', href: '/categoria/performance' },
-    ]
-  },
-  {
-    label: 'Marcas',
-    href: '/marcas',
-    children: [
-      { label: 'K&N', href: '/marca/kn' },
-      { label: 'Borla', href: '/marca/borla' },
-      { label: 'WeatherTech', href: '/marca/weathertech' },
-      { label: 'Pioneer', href: '/marca/pioneer' },
-    ]
-  },
+  { label: 'Catálogo', href: '/catalogo' },
   { label: 'Sobre Nosotros', href: '/sobre' },
   { label: 'Contacto', href: '/contacto' }
 ];
@@ -65,7 +46,7 @@ export function Navbar() {
               href="/" 
               className="text-2xl font-bold text-white-soft hover:text-rosso transition-colors duration-200"
             >
-              Grupo Rosso
+              Grupo Roso
             </Link>
           </div>
 

@@ -63,7 +63,7 @@ export function Footer() {
               href="/" 
               className="text-2xl font-bold text-white-soft hover:text-rosso transition-colors duration-200"
             >
-              Grupo Rosso
+              Grupo Roso
             </Link>
             <p className="mt-4 text-gray-neutral text-sm leading-relaxed">
               Tu tienda especializada en accesorios automotrices de alta calidad. 
@@ -116,7 +116,7 @@ export function Footer() {
         <div className="mt-12 pt-8 border-t border-gray-dark">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-neutral text-sm">
-              © {currentYear} Grupo Rosso. Todos los derechos reservados.
+              © {currentYear} Grupo Roso. Todos los derechos reservados.
             </p>
             <div className="mt-4 md:mt-0 flex space-x-6">
               <Link

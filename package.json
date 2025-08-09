@@ -1,7 +1,7 @@
 {
   "name": "grupo-rosso",
   "version": "1.0.0",
-  "description": "Tienda de accesorios automotrices premium - Grupo Rosso",
+  "description": "Tienda de accesorios automotrices premium - Grupo Roso",
   "private": true,
   "scripts": {
     "dev": "next dev",

@@ -9,11 +9,11 @@ import { CarIcon } from '@/components/icons/Icons';
 
 export const metadata: Metadata = {
   title: generateSEOTitle('Sobre Nosotros'),
-  description: 'Conoce la historia de Grupo Rosso, tu tienda especializada en accesorios automotrices de alta calidad en Nicaragua.',
-  keywords: 'Grupo Rosso, historia, misión, visión, accesorios auto, Nicaragua',
+  description: 'Conoce la historia de Grupo Roso, tu tienda especializada en accesorios automotrices de alta calidad en Nicaragua.',
+  keywords: 'Grupo Roso, historia, misión, visión, accesorios auto, Nicaragua',
   openGraph: {
-    title: 'Sobre Nosotros - Grupo Rosso',
-    description: 'Conoce la historia de Grupo Rosso, tu tienda especializada en accesorios automotrices de alta calidad.',
+    title: 'Sobre Nosotros - Grupo Roso',
+    description: 'Conoce la historia de Grupo Roso, tu tienda especializada en accesorios automotrices de alta calidad.',
     type: 'website'
   }
 };
@@ -47,7 +47,7 @@ export default function SobrePage() {
     {
       name: 'Carlos Rosso',
       position: 'Fundador y Director General',
-      description: 'Con más de 15 años de experiencia en el sector automotriz, Carlos lidera la visión estratégica de Grupo Rosso.'
+      description: 'Con más de 15 años de experiencia en el sector automotriz, Carlos lidera la visión estratégica de Grupo Roso.'
     },
     {
       name: 'Ana Martínez',
@@ -72,7 +72,7 @@ export default function SobrePage() {
             <CarIcon className="mx-auto h-16 w-16 text-rosso" />
           </div>
           <h1 className="text-4xl md:text-5xl font-bold text-white-soft mb-6">
-            Sobre <span className="text-rosso">Grupo Rosso</span>
+            Sobre <span className="text-rosso">Grupo Roso</span>
           </h1>
           <p className="text-xl text-gray-neutral max-w-3xl mx-auto leading-relaxed">
             Somos más que una tienda de accesorios automotrices. Somos tu socio de confianza 
@@ -89,7 +89,7 @@ export default function SobrePage() {
               </h2>
               <div className="space-y-4 text-gray-neutral leading-relaxed">
                 <p>
-                  Fundado en 2010, Grupo Rosso nació de la pasión por los automóviles y el deseo 
+                  Fundado en 2010, Grupo Roso nació de la pasión por los automóviles y el deseo 
                   de ofrecer a los entusiastas nicaragüenses acceso a accesorios de clase mundial.
                 </p>
                 <p>

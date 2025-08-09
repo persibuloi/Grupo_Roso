@@ -27,17 +27,7 @@ export function ProductGrid({ products, loading = false, className }: ProductGri
     console.log('🎯 ProductGrid - Estructura del primer producto:', Object.keys(products[0]));
   }
   
-  // Debug CRÍTICO: Alert en el cliente para verificar datos
-  React.useEffect(() => {
-    console.log('🚨 ProductGrid useEffect - Productos:', products?.length || 0);
-    if (typeof window !== 'undefined') {
-      // Solo mostrar alert una vez para no molestar
-      if (!window.productGridDebugShown) {
-        window.productGridDebugShown = true;
-        alert(`ProductGrid recibió: ${products?.length || 0} productos`);
-      }
-    }
-  }, [products]);
+
   
   if (loading) {
     return (

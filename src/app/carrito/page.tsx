@@ -16,6 +16,33 @@ import { PlusIcon, MinusIcon, TrashIcon, ShoppingCartIcon } from '@/components/i
 
 export default function CarritoPage() {
   const { cart, updateQuantity, removeItem, clearCart } = useCartStore();
+
+  const generateWhatsAppMessage = () => {
+    let message = `¡Hola! Me interesa consultar sobre estos productos de Grupo Roso:\n\n`;
+    
+    cart.items.forEach((item, index) => {
+      const product = item.product;
+      message += `${index + 1}. *${product.name}*\n`;
+      message += `   - Marca: ${product.brand?.name || 'N/A'}\n`;
+      message += `   - SKU: ${product.sku}\n`;
+      message += `   - Cantidad: ${item.quantity}\n`;
+      message += `   - Precio: ${formatPrice(product.priceRetail)}\n\n`;
+    });
+    
+    message += `*Resumen:*\n`;
+    message += `Total de productos: ${cart.itemCount}\n`;
+    message += `Subtotal: ${formatPrice(cart.total)}\n`;
+    message += `Total estimado: ${formatPrice(cart.total + (cart.total >= 100 ? 0 : 15))}\n\n`;
+    message += `¿Podrían darme más información sobre disponibilidad y formas de pago?`;
+    
+    return encodeURIComponent(message);
+  };
+
+  const handleWhatsAppContact = () => {
+    const message = generateWhatsAppMessage();
+    const whatsappUrl = `https://wa.me/50588793873?text=${message}`;
+    window.open(whatsappUrl, '_blank');
+  };
   
   const breadcrumbItems = [
     { label: 'Inicio', href: '/' },
@@ -223,9 +250,12 @@ export default function CarritoPage() {
                 </div>
                 
                 <div className="space-y-3 pt-4">
-                  <Button size="lg" className="w-full">
-                    Proceder al Pago
-                    <span className="text-xs ml-2">(Próximamente)</span>
+                  <Button 
+                    size="lg" 
+                    className="w-full bg-green-600 hover:bg-green-700 text-white"
+                    onClick={handleWhatsAppContact}
+                  >
+                    💬 Consultar por WhatsApp
                   </Button>
                   
                   <Button asChild variant="secondary" size="lg" className="w-full">

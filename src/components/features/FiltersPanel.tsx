@@ -31,6 +31,13 @@ export function FiltersPanel({
     Object.entries(newFilters).forEach(([key, value]) => {
       if (value === undefined || value === null || value === '') {
         params.delete(key);
+      } else if (key === 'inStock') {
+        // Manejo especial para checkbox: solo agregar si está marcado (true)
+        if (value === true) {
+          params.set(key, '1');
+        } else {
+          params.delete(key); // Eliminar si está desmarcado (false)
+        }
       } else {
         params.set(key, value.toString());
       }

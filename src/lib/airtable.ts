@@ -55,6 +55,32 @@ function formatProduct(record: any, categories: Category[] = [], brands: Brand[]
     description: 'Marca por defecto'
   };
 
+  // Resolver nombres provenientes de LOOKUPs (string[])
+  const categoryName = Array.isArray(fields.Categoria)
+    ? (fields.Categoria[0] ?? '')
+    : (fields.Categoria ?? '');
+  const brandName = Array.isArray(fields.Marca)
+    ? (fields.Marca[0] ?? '')
+    : (fields.Marca ?? '');
+
+  const category: Category = categoryName
+    ? {
+        id: slugify(categoryName),
+        name: categoryName,
+        slug: slugify(categoryName),
+        description: ''
+      }
+    : defaultCategory;
+
+  const brand: Brand = brandName
+    ? {
+        id: slugify(brandName),
+        name: brandName,
+        slug: slugify(brandName),
+        description: ''
+      }
+    : defaultBrand;
+
   return {
     id: record.id,
     name: fields.Name || '',
@@ -64,8 +90,8 @@ function formatProduct(record: any, categories: Category[] = [], brands: Brand[]
     priceRetail: fields['Price Retail'] || 0,
     priceWholesale: fields['Price Wholesale'] || 0,
     stock: fields.Stock || 0,
-    category: defaultCategory,
-    brand: defaultBrand,
+    category,
+    brand,
     images: fields.Images ? fields.Images.map((img: any) => img.url) : [],
     active: fields.Active || false,
     createdTime: fields.createdTime || record.createdTime
@@ -108,54 +134,77 @@ export async function getBrands(): Promise<Brand[]> {
 }
 
 export async function getProducts(options: FilterOptions = {}): Promise<Product[]> {
-  console.log('🔍 getProducts - SOLUCION DIRECTA');
-  
+  // Respetar configuración de entorno y base inicializada
+  if (!base) {
+    console.warn('⚠️ Airtable no configurado (falta API key/base). Devolviendo []');
+    return [];
+  }
+
   try {
-    // Crear conexión directa con valores hardcodeados para garantizar que funcione
-    const directBase = Airtable.base('appPDMVHaoYx7wL9P');
-    
-    console.log('🛍️ Conectando directamente a Products...');
-    
-    const records = await directBase('Products').select({
-      maxRecords: 10
+    // Obtener registros de la tabla configurada
+    const records = await base(PRODUCTS_TABLE).select({
+      // Se puede ajustar pageSize si crece el dataset
+      pageSize: 100,
     }).all();
-    
-    console.log(`📦 Registros obtenidos DIRECTAMENTE: ${records.length}`);
-    
-    if (records.length === 0) {
-      console.log('❌ NO HAY REGISTROS - Problema con la tabla o conexión');
-      return [];
+
+    let products = records.map((r: any) => formatProduct(r));
+
+    // Filtrado en memoria según FilterOptions
+    if (options.category) {
+      const cat = slugify(options.category);
+      products = products.filter((p: Product) => p.category && (p.category.slug === cat || p.category.name.toLowerCase() === options.category!.toLowerCase()));
     }
-    
-    const products = records.map((record: any) => {
-      const fields = record.fields;
-      console.log(`🔍 Procesando DIRECTO: ${fields.Name}`);
-      
-      return {
-        id: record.id,
-        name: fields.Name || '',
-        slug: fields.Name ? fields.Name.toLowerCase().replace(/\s+/g, '-') : '',
-        sku: fields.SKU || '',
-        description: fields.Description || '',
-        priceRetail: fields['Price Retail'] || 0,
-        priceWholesale: fields['Price Wholesale'] || 0,
-        stock: fields.Stock || 0,
-        category: { id: 'default', name: 'General', slug: 'general', description: '' },
-        brand: { id: 'default', name: 'General', slug: 'general', description: '' },
-        images: fields.Images ? fields.Images.map((img: any) => img.url) : [],
-        active: fields.Active || false,
-        createdTime: fields.createdTime || record.createdTime
-      };
-    });
-    
-    console.log(`✅ Productos procesados DIRECTAMENTE: ${products.length}`);
+
+    if (options.brand) {
+      const br = slugify(options.brand);
+      products = products.filter((p: Product) => p.brand && (p.brand.slug === br || p.brand.name.toLowerCase() === options.brand!.toLowerCase()));
+    }
+
+    if (typeof options.priceMin === 'number') {
+      products = products.filter((p: Product) => (p.priceRetail ?? 0) >= (options.priceMin as number));
+    }
+
+    if (typeof options.priceMax === 'number') {
+      products = products.filter((p: Product) => (p.priceRetail ?? 0) <= (options.priceMax as number));
+    }
+
+    if (typeof options.inStock === 'boolean') {
+      products = products.filter((p: Product) => (p.stock ?? 0) > 0 === options.inStock);
+    }
+
+    if (options.search) {
+      const q = options.search.toLowerCase();
+      products = products.filter((p: Product) =>
+        (p.name?.toLowerCase().includes(q)) ||
+        (p.description?.toLowerCase().includes(q)) ||
+        (p.sku?.toLowerCase().includes(q))
+      );
+    }
+
+    // Ordenamiento simple
+    switch (options.sortBy) {
+      case 'price-asc':
+        products.sort((a: Product, b: Product) => (a.priceRetail ?? 0) - (b.priceRetail ?? 0));
+        break;
+      case 'price-desc':
+        products.sort((a: Product, b: Product) => (b.priceRetail ?? 0) - (a.priceRetail ?? 0));
+        break;
+      case 'newest':
+        products.sort((a: Product, b: Product) => new Date(b.createdTime || 0).getTime() - new Date(a.createdTime || 0).getTime());
+        break;
+      case 'name':
+        products.sort((a: Product, b: Product) => a.name.localeCompare(b.name));
+        break;
+      default:
+        break;
+    }
+
     return products;
-    
   } catch (error) {
     if (error instanceof Error) {
-      console.error('❌ Error DIRECTO:', error.message);
+      console.error('❌ getProducts - Error:', error.message);
     } else {
-      console.error('❌ Error DIRECTO (unknown):', error);
+      console.error('❌ getProducts - Error (unknown):', error);
     }
     return [];
   }
