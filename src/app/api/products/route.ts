@@ -11,11 +11,14 @@ export async function GET(request: Request) {
     if (!process.env.AIRTABLE_API_KEY) {
       throw new Error('AIRTABLE_API_KEY no está definido');
     }
+    if (!process.env.AIRTABLE_BASE_ID) {
+      throw new Error('AIRTABLE_BASE_ID no está definido');
+    }
     const Airtable = require('airtable');
     
     console.log('🎯 API Route - Configurando Airtable...');
     Airtable.configure({ apiKey: process.env.AIRTABLE_API_KEY });
-    const base = Airtable.base('appPDMVHaoYx7wL9P');
+    const base = Airtable.base(process.env.AIRTABLE_BASE_ID);
     
     // Leer query params
     const { searchParams } = new URL(request.url);
