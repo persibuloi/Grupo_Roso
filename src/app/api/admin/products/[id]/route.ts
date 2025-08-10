@@ -14,7 +14,7 @@ const base = Airtable.base(process.env.AIRTABLE_BASE_ID!);
 // GET - Obtener producto específico
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Verificar autenticación
@@ -26,7 +26,8 @@ export async function GET(
       }, { status: 401 });
     }
 
-    const productId = params.id;
+    const resolvedParams = await params;
+    const productId = resolvedParams.id;
     console.log('🔍 Obteniendo producto:', productId);
 
     const productsTable = base(process.env.AIRTABLE_PRODUCTS_TABLE || 'Products');
@@ -65,7 +66,7 @@ export async function GET(
 // PUT - Actualizar producto
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Verificar autenticación y permisos
@@ -77,7 +78,8 @@ export async function PUT(
       }, { status: 401 });
     }
 
-    const productId = params.id;
+    const resolvedParams = await params;
+    const productId = resolvedParams.id;
     const body = await request.json();
     const { name, sku, description, priceRetail, priceWholesale, stock, active } = body;
 
@@ -144,7 +146,7 @@ export async function PUT(
 // DELETE - Desactivar producto (soft delete)
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Verificar autenticación y permisos
@@ -156,7 +158,8 @@ export async function DELETE(
       }, { status: 401 });
     }
 
-    const productId = params.id;
+    const resolvedParams = await params;
+    const productId = resolvedParams.id;
     console.log('🗑️ Desactivando producto:', productId);
 
     const productsTable = base(process.env.AIRTABLE_PRODUCTS_TABLE || 'Products');
