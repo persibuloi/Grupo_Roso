@@ -12,26 +12,9 @@ interface ProductGridProps {
 }
 
 export function ProductGrid({ products, loading = false, className }: ProductGridProps) {
-  // Debug: verificar qué productos llegan al componente
-  console.log('🎯 ProductGrid - DEBUG COMPLETO:');
-  console.log('🎯 ProductGrid - Productos recibidos:', products);
-  console.log('🎯 ProductGrid - Cantidad de productos:', products?.length || 'UNDEFINED');
-  console.log('🎯 ProductGrid - Tipo de datos:', typeof products);
-  console.log('🎯 ProductGrid - Es array?', Array.isArray(products));
-  console.log('🎯 ProductGrid - Loading?', loading);
-  console.log('🎯 ProductGrid - ClassName:', className);
-  
-  // Debug adicional: verificar estructura de productos
-  if (products && products.length > 0) {
-    console.log('🎯 ProductGrid - Primer producto:', products[0]);
-    console.log('🎯 ProductGrid - Estructura del primer producto:', Object.keys(products[0]));
-  }
-  
-
-  
   if (loading) {
     return (
-      <div className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 ${className}`}>
+      <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 ${className}`}>
         {Array.from({ length: 8 }).map((_, index) => (
           <ProductCardSkeleton key={index} />
         ))}
@@ -77,7 +60,7 @@ export function ProductGrid({ products, loading = false, className }: ProductGri
   }
 
   return (
-    <div className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 ${className}`}>
+    <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 ${className}`}>
       {products.map((product) => (
         <ProductCard key={product.id} product={product} />
       ))}

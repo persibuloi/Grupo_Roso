@@ -23,6 +23,17 @@ export function FiltersPanel({
 }: FiltersPanelProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  
+  // Estados locales para los sliders (para evitar aplicar filtros inmediatamente)
+  const [localPriceMin, setLocalPriceMin] = React.useState(currentFilters.priceMin || 0);
+  const [localPriceMax, setLocalPriceMax] = React.useState(currentFilters.priceMax || 1000);
+  const [sliderTimeout, setSliderTimeout] = React.useState<NodeJS.Timeout | null>(null);
+  
+  // Sincronizar estados locales cuando cambien los filtros externos
+  React.useEffect(() => {
+    setLocalPriceMin(currentFilters.priceMin || 0);
+    setLocalPriceMax(currentFilters.priceMax || 1000);
+  }, [currentFilters.priceMin, currentFilters.priceMax]);
 
   const updateFilters = (newFilters: Partial<FilterOptions>) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -48,6 +59,38 @@ export function FiltersPanel({
     onFiltersChange?.();
   };
 
+  // Función para manejar cambios de slider con debounce
+  const handleSliderChange = (type: 'min' | 'max', value: number) => {
+    // Actualizar estado local inmediatamente (para UI responsiva)
+    if (type === 'min') {
+      if (value <= localPriceMax) {
+        setLocalPriceMin(value);
+      }
+    } else {
+      if (value >= localPriceMin) {
+        setLocalPriceMax(value);
+      }
+    }
+    
+    // Limpiar timeout anterior
+    if (sliderTimeout) {
+      clearTimeout(sliderTimeout);
+    }
+    
+    // Aplicar filtros después de 500ms de inactividad
+    const newTimeout = setTimeout(() => {
+      const newFilters: Partial<FilterOptions> = {};
+      if (type === 'min') {
+        newFilters.priceMin = value === 0 ? undefined : value;
+      } else {
+        newFilters.priceMax = value === 1000 ? undefined : value;
+      }
+      updateFilters(newFilters);
+    }, 500);
+    
+    setSliderTimeout(newTimeout);
+  };
+
   const clearFilters = () => {
     router.push('/catalogo');
     onFiltersChange?.();
@@ -64,7 +107,7 @@ export function FiltersPanel({
         <Card>
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle className="text-sm">Filtros Activos</CardTitle>
+              <CardTitle className="text-sm text-black">Filtros Activos</CardTitle>
               <Button
                 variant="ghost"
                 size="sm"
@@ -108,7 +151,7 @@ export function FiltersPanel({
       {/* Ordenamiento */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-sm">Ordenar Por</CardTitle>
+          <CardTitle className="text-sm text-black">Ordenar Por</CardTitle>
         </CardHeader>
         <CardContent>
           <select
@@ -127,99 +170,126 @@ export function FiltersPanel({
       {/* Categorías */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-sm">Categorías</CardTitle>
+          <CardTitle className="text-sm text-black">Categorías</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-2">
-            <button
-              onClick={() => updateFilters({ category: undefined })}
-              className={`w-full text-left px-3 py-2 rounded transition-colors duration-200 ${
-                !currentFilters.category
-                  ? 'bg-rosso text-white'
-                  : 'text-white hover:text-rosso hover:bg-gray-800'
-              }`}
-            >
-              Todas las Categorías
-            </button>
+          <select
+            value={currentFilters.category || ''}
+            onChange={(e) => updateFilters({ category: e.target.value || undefined })}
+            className="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-black focus:border-rosso focus:outline-none transition-colors duration-200"
+          >
+            <option value="">Todas las Categorías</option>
             {categories.map((category) => (
-              <button
-                key={category.id}
-                onClick={() => updateFilters({ category: category.slug })}
-                className={`w-full text-left px-3 py-2 rounded transition-colors duration-200 ${
-                  currentFilters.category === category.slug
-                    ? 'bg-rosso text-white'
-                    : 'text-white hover:text-rosso hover:bg-gray-800'
-                }`}
-              >
+              <option key={category.id} value={category.slug}>
                 {category.name}
-              </button>
+              </option>
             ))}
-          </div>
+          </select>
         </CardContent>
       </Card>
 
       {/* Marcas */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-sm">Marcas</CardTitle>
+          <CardTitle className="text-sm text-black">Marcas</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-2">
-            <button
-              onClick={() => updateFilters({ brand: undefined })}
-              className={`w-full text-left px-3 py-2 rounded transition-colors duration-200 ${
-                !currentFilters.brand
-                  ? 'bg-rosso text-white'
-                  : 'text-white hover:text-rosso hover:bg-gray-800'
-              }`}
-            >
-              Todas las Marcas
-            </button>
+          <select
+            value={currentFilters.brand || ''}
+            onChange={(e) => updateFilters({ brand: e.target.value || undefined })}
+            className="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-black focus:border-rosso focus:outline-none transition-colors duration-200"
+          >
+            <option value="">Todas las Marcas</option>
             {brands.map((brand) => (
-              <button
-                key={brand.id}
-                onClick={() => updateFilters({ brand: brand.slug })}
-                className={`w-full text-left px-3 py-2 rounded transition-colors duration-200 ${
-                  currentFilters.brand === brand.slug
-                    ? 'bg-rosso text-white'
-                    : 'text-white hover:text-rosso hover:bg-gray-800'
-                }`}
-              >
+              <option key={brand.id} value={brand.slug}>
                 {brand.name}
-              </button>
+              </option>
             ))}
-          </div>
+          </select>
         </CardContent>
       </Card>
 
       {/* Rango de Precios */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-sm">Rango de Precios (USD)</CardTitle>
+          <CardTitle className="text-sm text-black">Rango de Precios (USD)</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            <div>
-              <label className="block text-xs text-white mb-1">Precio Mínimo</label>
-              <Input
-                type="number"
-                placeholder="0"
-                value={currentFilters.priceMin || ''}
-                onChange={(e) => updateFilters({ 
-                  priceMin: e.target.value ? Number(e.target.value) : undefined 
-                })}
-              />
+            {/* Valores actuales */}
+            <div className="flex justify-between text-sm text-gray-700 font-medium">
+              <span>${localPriceMin}</span>
+              <span>${localPriceMax}</span>
             </div>
-            <div>
-              <label className="block text-xs text-white mb-1">Precio Máximo</label>
-              <Input
-                type="number"
-                placeholder="1000"
-                value={currentFilters.priceMax || ''}
-                onChange={(e) => updateFilters({ 
-                  priceMax: e.target.value ? Number(e.target.value) : undefined 
-                })}
-              />
+            
+            {/* Range Sliders Separados */}
+            <div className="space-y-3">
+              {/* Precio Mínimo */}
+              <div>
+                <label className="block text-xs text-gray-700 mb-1">Precio Mínimo: ${localPriceMin}</label>
+                <input
+                  type="range"
+                  min="0"
+                  max="1000"
+                  step="10"
+                  value={localPriceMin}
+                  onChange={(e) => handleSliderChange('min', Number(e.target.value))}
+                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-thumb-rosso"
+                />
+              </div>
+              
+              {/* Precio Máximo */}
+              <div>
+                <label className="block text-xs text-gray-700 mb-1">Precio Máximo: ${localPriceMax}</label>
+                <input
+                  type="range"
+                  min="0"
+                  max="1000"
+                  step="10"
+                  value={localPriceMax}
+                  onChange={(e) => handleSliderChange('max', Number(e.target.value))}
+                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-thumb-rosso"
+                />
+              </div>
+              
+              {/* Rango visual */}
+              <div className="text-center text-sm text-gray-600 bg-gray-50 py-2 rounded">
+                Rango: ${localPriceMin} - ${localPriceMax}
+              </div>
+            </div>
+            
+            {/* Campos de entrada rápida (opcional) */}
+            <div className="flex gap-2 pt-2">
+              <div className="flex-1">
+                <Input
+                  type="number"
+                  placeholder="Min"
+                  value={currentFilters.priceMin || ''}
+                  onChange={(e) => {
+                    const newMin = e.target.value ? Number(e.target.value) : undefined;
+                    const currentMax = currentFilters.priceMax || 1000;
+                    if (!newMin || newMin <= currentMax) {
+                      updateFilters({ priceMin: newMin });
+                    }
+                  }}
+                  className="text-xs"
+                />
+              </div>
+              <div className="flex-1">
+                <Input
+                  type="number"
+                  placeholder="Max"
+                  value={currentFilters.priceMax || ''}
+                  onChange={(e) => {
+                    const newMax = e.target.value ? Number(e.target.value) : undefined;
+                    const currentMin = currentFilters.priceMin || 0;
+                    if (!newMax || newMax >= currentMin) {
+                      updateFilters({ priceMax: newMax });
+                    }
+                  }}
+                  className="text-xs"
+                />
+              </div>
             </div>
           </div>
         </CardContent>
@@ -228,7 +298,7 @@ export function FiltersPanel({
       {/* Disponibilidad */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-sm">Disponibilidad</CardTitle>
+          <CardTitle className="text-sm text-black">Disponibilidad</CardTitle>
         </CardHeader>
         <CardContent>
           <label className="flex items-center space-x-3 cursor-pointer">
@@ -238,7 +308,7 @@ export function FiltersPanel({
               onChange={(e) => updateFilters({ inStock: e.target.checked })}
               className="w-4 h-4 text-rosso bg-white border-gray-300 rounded focus:ring-rosso focus:ring-2"
             />
-            <span className="text-sm text-white">Solo productos en stock</span>
+            <span className="text-sm text-black">Solo productos en stock</span>
           </label>
         </CardContent>
       </Card>

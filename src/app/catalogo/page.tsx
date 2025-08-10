@@ -116,44 +116,78 @@ function CatalogoPageContent() {
         <Breadcrumbs items={breadcrumbItems} className="mb-6" />
         
         {/* Header */}
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-8">
-          <div>
-            <h1 className="text-3xl md:text-4xl font-bold text-black mb-2">
+        <div className="mb-6">
+          <div className="text-center lg:text-left mb-4">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-black mb-2">
               Catálogo de Productos
             </h1>
-            <p className="text-gray-700">
+            <p className="text-gray-700 text-sm sm:text-base">
               {loading ? 'Cargando productos...' : `${products.length} productos encontrados`}
             </p>
           </div>
           
-          {/* Search */}
-          <div className="mt-4 lg:mt-0 flex items-center space-x-4">
-            <input
-              type="text"
-              placeholder="Buscar productos..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full lg:w-80 px-4 py-2 bg-white border border-gray-300 rounded-md text-black placeholder:text-gray-500 focus:border-rosso focus:outline-none transition-colors duration-200"
-            />
+          {/* Search and Filters */}
+          <div className="flex items-center space-x-3">
+            <div className="flex-1">
+              <input
+                type="text"
+                placeholder="Buscar productos..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-black placeholder:text-gray-500 focus:border-rosso focus:outline-none transition-colors duration-200 text-sm sm:text-base"
+              />
+            </div>
             
             {/* Mobile filters toggle */}
             <Button
               variant="secondary"
-              size="icon"
+              size="md"
               onClick={() => setShowFilters(!showFilters)}
-              className="lg:hidden"
+              className="lg:hidden px-4 py-3 text-sm"
               aria-label="Filtros"
             >
-              <FilterIcon size={20} />
+              <FilterIcon size={18} className="mr-2" />
+              Filtros
             </Button>
           </div>
         </div>
         
-        <div className="flex gap-8">
-          {/* Filters Sidebar */}
-          <aside className={`w-80 flex-shrink-0 ${
-            showFilters ? 'block' : 'hidden'
-          } lg:block`}>
+        {/* Mobile Filters Overlay */}
+        {showFilters && (
+          <div className="fixed inset-0 z-50 lg:hidden">
+            {/* Backdrop */}
+            <div 
+              className="absolute inset-0 bg-black bg-opacity-50"
+              onClick={() => setShowFilters(false)}
+            />
+            {/* Filters Panel */}
+            <div className="absolute top-0 left-0 h-full w-80 max-w-[85vw] bg-white shadow-xl overflow-y-auto">
+              <div className="p-4">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-lg font-semibold text-black">Filtros</h2>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setShowFilters(false)}
+                    className="text-gray-500 hover:text-black"
+                  >
+                    ✕
+                  </Button>
+                </div>
+                <FiltersPanel
+                  categories={categories}
+                  brands={brands}
+                  currentFilters={filters}
+                  onFiltersChange={() => setShowFilters(false)}
+                />
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div className="lg:flex lg:gap-8">
+          {/* Desktop Filters Sidebar */}
+          <aside className="hidden lg:block w-80 flex-shrink-0">
             <FiltersPanel
               categories={categories}
               brands={brands}
@@ -163,7 +197,7 @@ function CatalogoPageContent() {
           </aside>
           
           {/* Products Grid */}
-          <main className="flex-1">
+          <main className="flex-1 lg:min-w-0">
             <ProductGrid products={products} loading={loading} />
             
             {/* Load More - Para futuras mejoras de paginación */}

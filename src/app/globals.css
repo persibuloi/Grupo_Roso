@@ -2,6 +2,70 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Custom Range Slider Styles */
+.slider-thumb-rosso {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  outline: none;
+  overflow: hidden;
+  touch-action: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+.slider-thumb-rosso::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: #dc2626;
+  cursor: pointer;
+  border: 2px solid #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+}
+
+.slider-thumb-rosso::-moz-range-thumb {
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: #dc2626;
+  cursor: pointer;
+  border: 2px solid #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+  -moz-appearance: none;
+}
+
+.slider-thumb-rosso:focus {
+  outline: none;
+}
+
+.slider-thumb-rosso:active::-webkit-slider-thumb {
+  transform: scale(1.1);
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.2);
+}
+
+.slider-thumb-rosso:active::-moz-range-thumb {
+  transform: scale(1.1);
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.2);
+}
+
+/* Prevent scroll on touch */
+.slider-thumb-rosso::-webkit-slider-track {
+  background: transparent;
+  border: none;
+}
+
+.slider-thumb-rosso::-moz-range-track {
+  background: transparent;
+  border: none;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;

@@ -72,33 +72,33 @@ export function ProductCard({ product, className }: ProductCardProps) {
         </div>
         
         {/* Product Info */}
-        <CardContent className="p-4">
-          <div className="space-y-3">
+        <CardContent className="p-3 sm:p-4">
+          <div className="space-y-2 sm:space-y-3">
             {/* Brand */}
             {product.brand && (
-              <p className="text-xs text-gray-300 uppercase tracking-wider">
+              <p className="text-xs text-gray-600 uppercase tracking-wider">
                 {product.brand.name}
               </p>
             )}
             
             {/* Product Name */}
-            <h3 className="font-semibold text-white text-sm leading-tight line-clamp-2 min-h-[2.5rem]">
+            <h3 className="font-semibold text-black text-sm sm:text-base leading-tight line-clamp-2 min-h-[2.5rem]">
               {product.name}
             </h3>
             
             {/* SKU */}
-            <p className="text-xs text-gray-300 font-mono">
+            <p className="text-xs text-gray-600 font-mono">
               SKU: {product.sku}
             </p>
             
-            {/* Price */}
-            <div className="flex items-center justify-between pt-2">
-              <span className="text-lg font-semibold text-rosso">
+            {/* Price and Stock */}
+            <div className="space-y-2 pt-2">
+              <div className="text-base sm:text-lg font-semibold text-rosso">
                 {formatPrice(product.priceRetail)}
-              </span>
+              </div>
               
               {/* Stock indicator */}
-              <span className={`text-xs ${
+              <div className={`text-xs ${
                 isOutOfStock 
                   ? 'text-red-400' 
                   : product.stock <= 5 
@@ -106,7 +106,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
                     : 'text-green-400'
               }`}>
                 {isOutOfStock ? 'Sin stock' : `${product.stock} disponibles`}
-              </span>
+              </div>
             </div>
           </div>
         </CardContent>
