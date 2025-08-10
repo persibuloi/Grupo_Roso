@@ -80,7 +80,7 @@ export async function GET(request: Request) {
           : { id: 'general', name: 'General', slug: 'general', description: '' },
         images: Array.isArray(fields.Images) ? fields.Images.map((img: any) => img.url) : [],
         active: fields.Active ?? true,
-        createdTime: fields.createdTime || record.createdTime
+        createdTime: fields.createdTime || (record as any).createdTime
       };
     });
     

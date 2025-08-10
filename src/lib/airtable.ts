@@ -94,7 +94,7 @@ function formatProduct(record: any, categories: Category[] = [], brands: Brand[]
     brand,
     images: fields.Images ? fields.Images.map((img: any) => img.url) : [],
     active: fields.Active || false,
-    createdTime: fields.createdTime || record.createdTime
+    createdTime: fields.createdTime || (record as any).createdTime
   };
 }
 

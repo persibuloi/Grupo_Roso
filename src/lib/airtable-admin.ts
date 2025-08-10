@@ -178,7 +178,7 @@ export class UserManager {
       active: record.fields.Active || false,
       company: record.fields.Company || '',
       phone: record.fields.Phone || '',
-      createdTime: record.fields.Created || record.createdTime,
+      createdTime: record.fields.Created || (record as any).createdTime,
       lastLogin: record.fields['Last Login'] || undefined
     };
   }
@@ -294,7 +294,7 @@ export class ActivityLogger {
         resourceId: record.fields['Resource ID'],
         details: record.fields.Details,
         ipAddress: record.fields['IP Address'],
-        timestamp: record.fields.Timestamp || record.createdTime
+        timestamp: record.fields.Timestamp || (record as any).createdTime
       }));
     } catch (error) {
       console.error('Error getting user activities:', error);
