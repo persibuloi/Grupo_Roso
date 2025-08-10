@@ -1,7 +1,7 @@
 // API para gestión de productos en el panel admin
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '../../auth/[...nextauth]/route';
+import { authOptions } from '@/lib/authOptions';
 import Airtable from 'airtable';
 
 // Configurar Airtable
