@@ -106,7 +106,7 @@ export async function GET(request: NextRequest) {
           : { id: 'general', name: 'General', slug: 'general', description: '' },
         active: fields.Active ?? true,
         image: imageUrl,
-        createdTime: fields.createdTime || record.createdTime,
+        createdTime: fields.createdTime || (record as any).createdTime,
         // Calcular estado del stock
         stockStatus: (() => {
           const stock = Number(fields.Stock ?? 0) || 0;
