@@ -36,14 +36,14 @@ export const metadata: Metadata = {
     title: 'Grupo Roso - Accesorios Automotrices Premium',
     description: 'Tienda especializada en accesorios automotrices de alta calidad.',
     images: ['/images/og-image.jpg']
-  },
-  themeColor: '#C1121F'
+  }
 };
 
 export const viewport = {
   width: 'device-width',
   initialScale: 1,
-  maximumScale: 1
+  maximumScale: 1,
+  themeColor: '#C1121F'
 };
 
 export default function RootLayout({

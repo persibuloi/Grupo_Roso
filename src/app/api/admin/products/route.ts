@@ -37,22 +37,10 @@ export async function GET(request: NextRequest) {
 
     console.log('🔍 Obteniendo productos para administración...');
 
-    const productsTable = base(process.env.AIRTABLE_PRODUCTS_TABLE || 'Products');
-    const records = await productsTable.select({
-      fields: [
-        'Name', 
-        'SKU', 
-        'Description', 
-        'Price Retail', 
-        'Price Wholesale', 
-        'Stock', 
-        'Categoria', 
-        'Marca', 
-        'Active',
-        'Images',
-        'createdTime'
-      ],
-      sort: [{ field: 'createdTime', direction: 'desc' }]
+    // Usar EXACTAMENTE la misma lógica que el endpoint de productos que funciona
+    const records = await base('Products').select({
+      filterByFormula: 'IF({Active}, TRUE(), TRUE())',
+      maxRecords: 100
     }).all();
 
     // Helper functions (optimized for LOOKUP fields with objects)
@@ -78,15 +66,14 @@ export async function GET(request: NextRequest) {
     const products = records.map((record, index) => {
       const fields = record.fields;
       
-      // Extract LOOKUP field values (Categoria and Marca point to other tables)
-      const categoryName = toStr(fields['Categoria']);
-      const brandName = toStr(fields['Marca']);
+      // Usar EXACTAMENTE la misma lógica que el endpoint de productos que funciona
+      const categoryName = toStr(fields['Categoria'] ?? fields['Category Name'] ?? fields.Category);
+      const brandName = toStr(fields['Marca'] ?? fields['Brand Name'] ?? fields.Brand);
 
-      // Obtener la URL de la imagen
-      const imagesField = record.get('Images');
+      // Obtener la URL de la imagen usando la misma lógica que el endpoint principal
       let imageUrl = '';
-      if (imagesField && Array.isArray(imagesField) && imagesField.length > 0) {
-        imageUrl = imagesField[0].url || '';
+      if (fields.Images && Array.isArray(fields.Images) && fields.Images.length > 0) {
+        imageUrl = fields.Images[0].url || '';
       }
 
       return {

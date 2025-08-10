@@ -9,14 +9,20 @@ export const revalidate = 300; // Revalidar cada 5 minutos
 
 export default async function HomePage() {
   // Obtener datos reales desde APIs internas (usar URL absoluta para SSR/ISR)
-  const baseURL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+  const baseURL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3002';
   let featuredProducts: any[] = [];
 
   try {
-    const productsRes = await fetch(`${baseURL}/api/products?sortBy=newest`, { next: { revalidate: 300 } });
-    const productsJson = productsRes?.ok ? await productsRes.json().catch(() => ({ products: [] })) : { products: [] };
-    featuredProducts = Array.isArray(productsJson?.products) ? productsJson.products.slice(0, 8) : [];
+    // Obtener productos destacados desde el endpoint específico
+    const featuredRes = await fetch(`${baseURL}/api/products/featured`, { cache: 'no-store' });
+    const featuredJson = featuredRes?.ok ? await featuredRes.json().catch(() => ({ products: [] })) : { products: [] };
+    featuredProducts = Array.isArray(featuredJson?.products) ? featuredJson.products : [];
+    
+    console.log(`🌟 Productos destacados obtenidos: ${featuredProducts.length}`);
+    console.log(`🌟 Productos destacados:`, featuredProducts.map(p => p.name).join(', '));
+    console.log(`🌟 Array completo de productos:`, JSON.stringify(featuredProducts.map(p => ({name: p.name, id: p.id})), null, 2));
   } catch (e) {
+    console.error('❌ Error cargando productos destacados:', e);
     // En caso de cualquier error, mantener arrays vacíos para no romper la Home
     featuredProducts = [];
   }
