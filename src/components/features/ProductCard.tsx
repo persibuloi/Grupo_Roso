@@ -33,7 +33,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
     <Card className={`group relative overflow-hidden transition-all duration-250 hover:shadow-lg hover:-translate-y-1 ${className}`}>
       <Link href={`/producto/${product.slug}`} className="block">
         {/* Image Container */}
-        <div className="relative aspect-square overflow-hidden bg-gray-800 rounded-t-lg">
+        <div className="relative aspect-square overflow-hidden bg-gray-100 rounded-t-lg">
           <Image
             src={productImage}
             alt={product.name}
@@ -76,18 +76,18 @@ export function ProductCard({ product, className }: ProductCardProps) {
           <div className="space-y-3">
             {/* Brand */}
             {product.brand && (
-              <p className="text-xs text-gray-neutral uppercase tracking-wider">
+              <p className="text-xs text-gray-300 uppercase tracking-wider">
                 {product.brand.name}
               </p>
             )}
             
             {/* Product Name */}
-            <h3 className="font-semibold text-white-soft text-sm leading-tight line-clamp-2 min-h-[2.5rem]">
+            <h3 className="font-semibold text-white text-sm leading-tight line-clamp-2 min-h-[2.5rem]">
               {product.name}
             </h3>
             
             {/* SKU */}
-            <p className="text-xs text-gray-neutral font-mono">
+            <p className="text-xs text-gray-300 font-mono">
               SKU: {product.sku}
             </p>
             

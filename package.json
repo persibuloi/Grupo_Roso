@@ -13,11 +13,14 @@
   },
   "dependencies": {
     "@headlessui/react": "^2.2.7",
+    "@types/bcryptjs": "^3.0.0",
     "airtable": "^0.12.2",
+    "bcryptjs": "^3.0.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "dotenv": "^17.2.1",
     "next": "15.4.6",
+    "next-auth": "^4.24.11",
     "react": "19.1.1",
     "react-dom": "19.1.1",
     "zustand": "^5.0.7"

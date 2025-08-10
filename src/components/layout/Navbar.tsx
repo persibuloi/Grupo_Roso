@@ -37,14 +37,14 @@ export function Navbar() {
   };
 
   return (
-    <nav className="sticky top-0 z-50 bg-anthracite border-b border-gray-dark shadow-sm">
+    <nav className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link 
               href="/" 
-              className="text-2xl font-bold text-white-soft hover:text-rosso transition-colors duration-200"
+              className="text-2xl font-bold text-black hover:text-rosso transition-colors duration-200"
             >
               Grupo Roso
             </Link>
@@ -61,7 +61,7 @@ export function Navbar() {
                       'px-3 py-2 text-sm font-medium transition-colors duration-200 hover:text-rosso',
                       pathname === item.href 
                         ? 'text-rosso' 
-                        : 'text-white-soft'
+                        : 'text-black'
                     )}
                     onMouseEnter={() => item.children && setActiveDropdown(item.label)}
                   >
@@ -76,14 +76,14 @@ export function Navbar() {
                   {/* Mega Menu */}
                   {item.children && activeDropdown === item.label && (
                     <div 
-                      className="absolute top-full left-0 mt-1 w-64 bg-anthracite border border-gray-dark rounded-md shadow-lg py-2 z-50"
+                      className="absolute top-full left-0 mt-1 w-64 bg-white border border-gray-200 rounded-md shadow-lg py-2 z-50"
                       onMouseLeave={() => setActiveDropdown(null)}
                     >
                       {item.children.map((child) => (
                         <Link
                           key={child.href}
                           href={child.href}
-                          className="block px-4 py-2 text-sm text-white-soft hover:text-rosso hover:bg-gray-dark/50 transition-colors duration-200"
+                          className="block px-4 py-2 text-sm text-black hover:text-rosso hover:bg-gray-50 transition-colors duration-200"
                         >
                           {child.label}
                         </Link>
@@ -99,7 +99,7 @@ export function Navbar() {
           <div className="hidden md:flex items-center space-x-4">
             <Link
               href="/busqueda"
-              className="p-2 text-white-soft hover:text-rosso transition-colors duration-200"
+              className="p-2 text-black hover:text-rosso transition-colors duration-200"
               aria-label="Buscar"
             >
               <SearchIcon size={20} />
@@ -107,14 +107,14 @@ export function Navbar() {
             
             <Link
               href="/carrito"
-              className="relative p-2 text-white-soft hover:text-rosso transition-colors duration-200"
+              className="relative p-2 text-black hover:text-rosso transition-colors duration-200"
               aria-label="Carrito de compras"
             >
               <ShoppingCartIcon size={20} />
               {cart.itemCount > 0 && (
                 <Badge 
                   variant="rosso" 
-                  className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
+                  className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs text-white"
                 >
                   {cart.itemCount}
                 </Badge>
@@ -126,7 +126,7 @@ export function Navbar() {
           <div className="md:hidden flex items-center space-x-4">
             <Link
               href="/busqueda"
-              className="p-2 text-white-soft hover:text-rosso transition-colors duration-200"
+              className="p-2 text-black hover:text-rosso transition-colors duration-200"
               aria-label="Buscar"
             >
               <SearchIcon size={20} />
@@ -134,14 +134,14 @@ export function Navbar() {
             
             <Link
               href="/carrito"
-              className="relative p-2 text-white-soft hover:text-rosso transition-colors duration-200"
+              className="relative p-2 text-black hover:text-rosso transition-colors duration-200"
               aria-label="Carrito de compras"
             >
               <ShoppingCartIcon size={20} />
               {cart.itemCount > 0 && (
                 <Badge 
                   variant="rosso" 
-                  className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
+                  className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs text-white"
                 >
                   {cart.itemCount}
                 </Badge>
@@ -152,7 +152,7 @@ export function Navbar() {
               variant="ghost"
               size="icon"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="text-white-soft hover:text-rosso"
+              className="text-black hover:text-rosso"
               aria-label="Abrir menú"
             >
               {isMobileMenuOpen ? <XIcon size={20} /> : <MenuIcon size={20} />}
@@ -163,7 +163,7 @@ export function Navbar() {
 
       {/* Mobile Navigation */}
       {isMobileMenuOpen && (
-        <div className="md:hidden bg-anthracite border-t border-gray-dark">
+        <div className="md:hidden bg-white border-t border-gray-200">
           <div className="px-2 pt-2 pb-3 space-y-1">
             {navItems.map((item) => (
               <div key={item.label}>
@@ -174,7 +174,7 @@ export function Navbar() {
                       'block px-3 py-2 text-base font-medium transition-colors duration-200',
                       pathname === item.href 
                         ? 'text-rosso' 
-                        : 'text-white-soft hover:text-rosso'
+                        : 'text-black hover:text-rosso'
                     )}
                     onClick={!item.children ? closeMobileMenu : undefined}
                   >
@@ -185,7 +185,7 @@ export function Navbar() {
                       variant="ghost"
                       size="icon"
                       onClick={() => handleDropdownToggle(item.label)}
-                      className="text-white-soft hover:text-rosso"
+                      className="text-black hover:text-rosso"
                     >
                       <ChevronDownIcon 
                         size={16} 
@@ -204,7 +204,7 @@ export function Navbar() {
                       <Link
                         key={child.href}
                         href={child.href}
-                        className="block px-3 py-2 text-sm text-gray-neutral hover:text-rosso transition-colors duration-200"
+                        className="block px-3 py-2 text-sm text-gray-700 hover:text-rosso transition-colors duration-200"
                         onClick={closeMobileMenu}
                       >
                         {child.label}

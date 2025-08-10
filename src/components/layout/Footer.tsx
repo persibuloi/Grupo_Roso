@@ -54,18 +54,18 @@ const socialLinks = [
 
 export function Footer() {
   return (
-    <footer className="bg-anthracite border-t border-gray-dark">
+    <footer className="bg-white border-t border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Logo y descripción */}
           <div className="lg:col-span-1">
             <Link 
               href="/" 
-              className="text-2xl font-bold text-white-soft hover:text-rosso transition-colors duration-200"
+              className="text-2xl font-bold text-black hover:text-rosso transition-colors duration-200"
             >
               Grupo Roso
             </Link>
-            <p className="mt-4 text-gray-neutral text-sm leading-relaxed">
+            <p className="mt-4 text-gray-700 text-sm leading-relaxed">
               Tu tienda especializada en accesorios automotrices de alta calidad. 
               Encuentra todo lo que necesitas para personalizar y mejorar tu vehículo.
             </p>
@@ -78,7 +78,7 @@ export function Footer() {
                   <a
                     key={social.label}
                     href={social.href}
-                    className="text-gray-neutral hover:text-rosso transition-colors duration-200"
+                    className="text-gray-700 hover:text-rosso transition-colors duration-200"
                     aria-label={social.label}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -93,7 +93,7 @@ export function Footer() {
           {/* Enlaces de navegación */}
           {footerSections.map((section) => (
             <div key={section.title} className="">
-              <h3 className="text-white-soft font-semibold text-sm uppercase tracking-wider mb-4">
+              <h3 className="text-black font-semibold text-sm uppercase tracking-wider mb-4">
                 {section.title}
               </h3>
               <ul className="space-y-3">
@@ -101,7 +101,7 @@ export function Footer() {
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="text-gray-neutral hover:text-rosso transition-colors duration-200 text-sm"
+                      className="text-gray-700 hover:text-rosso transition-colors duration-200 text-sm"
                     >
                       {link.label}
                     </Link>
@@ -113,23 +113,30 @@ export function Footer() {
         </div>
 
         {/* Línea separadora y copyright */}
-        <div className="mt-12 pt-8 border-t border-gray-dark">
+        <div className="mt-12 pt-8 border-t border-gray-200">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-gray-neutral text-sm">
+            <p className="text-gray-700 text-sm">
               © {currentYear} Grupo Roso. Todos los derechos reservados.
             </p>
             <div className="mt-4 md:mt-0 flex space-x-6">
               <Link
                 href="/politicas"
-                className="text-gray-neutral hover:text-rosso transition-colors duration-200 text-sm"
+                className="text-gray-700 hover:text-rosso transition-colors duration-200 text-sm"
               >
                 Políticas de Privacidad
               </Link>
               <Link
                 href="/terminos"
-                className="text-gray-neutral hover:text-rosso transition-colors duration-200 text-sm"
+                className="text-gray-700 hover:text-rosso transition-colors duration-200 text-sm"
               >
                 Términos y Condiciones
+              </Link>
+              <Link
+                href="/admin"
+                className="text-gray-500 hover:text-rosso transition-colors duration-200 text-sm"
+                title="Panel de Administración - Solo Empleados"
+              >
+                Admin
               </Link>
             </div>
           </div>

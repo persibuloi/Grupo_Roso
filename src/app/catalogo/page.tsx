@@ -110,7 +110,7 @@ function CatalogoPageContent() {
   ];
 
   return (
-    <div className="min-h-screen bg-anthracite">
+    <div className="min-h-screen bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Breadcrumbs */}
         <Breadcrumbs items={breadcrumbItems} className="mb-6" />
@@ -118,10 +118,10 @@ function CatalogoPageContent() {
         {/* Header */}
         <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl md:text-4xl font-bold text-white-soft mb-2">
+            <h1 className="text-3xl md:text-4xl font-bold text-black mb-2">
               Catálogo de Productos
             </h1>
-            <p className="text-gray-neutral">
+            <p className="text-gray-700">
               {loading ? 'Cargando productos...' : `${products.length} productos encontrados`}
             </p>
           </div>
@@ -133,7 +133,7 @@ function CatalogoPageContent() {
               placeholder="Buscar productos..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full lg:w-80 px-4 py-2 bg-gray-800 border border-gray-700 rounded-md text-white-soft placeholder:text-gray-400 focus:border-rosso focus:outline-none transition-colors duration-200"
+              className="w-full lg:w-80 px-4 py-2 bg-white border border-gray-300 rounded-md text-black placeholder:text-gray-500 focus:border-rosso focus:outline-none transition-colors duration-200"
             />
             
             {/* Mobile filters toggle */}
@@ -184,15 +184,15 @@ function CatalogoPageContent() {
 export default function CatalogoPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-anthracite">
+      <div className="min-h-screen bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="animate-pulse space-y-8">
-            <div className="h-8 bg-gray-700 rounded w-1/4"></div>
+            <div className="h-8 bg-gray-200 rounded w-1/4"></div>
             <div className="space-y-4">
-              <div className="h-12 bg-gray-700 rounded"></div>
+              <div className="h-12 bg-gray-200 rounded"></div>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {Array.from({ length: 8 }).map((_, i) => (
-                  <div key={i} className="bg-gray-700 rounded-lg h-64"></div>
+                  <div key={i} className="bg-gray-200 rounded-lg h-64"></div>
                 ))}
               </div>
             </div>

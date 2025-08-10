@@ -114,7 +114,7 @@ export function FiltersPanel({
           <select
             value={currentFilters.sortBy || 'newest'}
             onChange={(e) => updateFilters({ sortBy: e.target.value as FilterOptions['sortBy'] })}
-            className="w-full px-3 py-2 bg-gray-800 border border-gray-700 rounded-md text-white-soft focus:border-rosso focus:outline-none transition-colors duration-200"
+            className="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-black focus:border-rosso focus:outline-none transition-colors duration-200"
           >
             <option value="newest">Más Recientes</option>
             <option value="price-asc">Precio: Menor a Mayor</option>
@@ -136,7 +136,7 @@ export function FiltersPanel({
               className={`w-full text-left px-3 py-2 rounded transition-colors duration-200 ${
                 !currentFilters.category
                   ? 'bg-rosso text-white'
-                  : 'text-gray-neutral hover:text-rosso hover:bg-gray-800'
+                  : 'text-white hover:text-rosso hover:bg-gray-800'
               }`}
             >
               Todas las Categorías
@@ -148,7 +148,7 @@ export function FiltersPanel({
                 className={`w-full text-left px-3 py-2 rounded transition-colors duration-200 ${
                   currentFilters.category === category.slug
                     ? 'bg-rosso text-white'
-                    : 'text-gray-neutral hover:text-rosso hover:bg-gray-800'
+                    : 'text-white hover:text-rosso hover:bg-gray-800'
                 }`}
               >
                 {category.name}
@@ -170,7 +170,7 @@ export function FiltersPanel({
               className={`w-full text-left px-3 py-2 rounded transition-colors duration-200 ${
                 !currentFilters.brand
                   ? 'bg-rosso text-white'
-                  : 'text-gray-neutral hover:text-rosso hover:bg-gray-800'
+                  : 'text-white hover:text-rosso hover:bg-gray-800'
               }`}
             >
               Todas las Marcas
@@ -182,7 +182,7 @@ export function FiltersPanel({
                 className={`w-full text-left px-3 py-2 rounded transition-colors duration-200 ${
                   currentFilters.brand === brand.slug
                     ? 'bg-rosso text-white'
-                    : 'text-gray-neutral hover:text-rosso hover:bg-gray-800'
+                    : 'text-white hover:text-rosso hover:bg-gray-800'
                 }`}
               >
                 {brand.name}
@@ -200,7 +200,7 @@ export function FiltersPanel({
         <CardContent>
           <div className="space-y-4">
             <div>
-              <label className="block text-xs text-gray-neutral mb-1">Precio Mínimo</label>
+              <label className="block text-xs text-white mb-1">Precio Mínimo</label>
               <Input
                 type="number"
                 placeholder="0"
@@ -211,7 +211,7 @@ export function FiltersPanel({
               />
             </div>
             <div>
-              <label className="block text-xs text-gray-neutral mb-1">Precio Máximo</label>
+              <label className="block text-xs text-white mb-1">Precio Máximo</label>
               <Input
                 type="number"
                 placeholder="1000"
@@ -236,9 +236,9 @@ export function FiltersPanel({
               type="checkbox"
               checked={currentFilters.inStock || false}
               onChange={(e) => updateFilters({ inStock: e.target.checked })}
-              className="w-4 h-4 text-rosso bg-gray-800 border-gray-700 rounded focus:ring-rosso focus:ring-2"
+              className="w-4 h-4 text-rosso bg-white border-gray-300 rounded focus:ring-rosso focus:ring-2"
             />
-            <span className="text-sm text-gray-neutral">Solo productos en stock</span>
+            <span className="text-sm text-white">Solo productos en stock</span>
           </label>
         </CardContent>
       </Card>

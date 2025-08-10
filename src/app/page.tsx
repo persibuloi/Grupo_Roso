@@ -22,20 +22,19 @@ export default async function HomePage() {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-anthracite via-gray-900 to-anthracite py-24 overflow-hidden">
-        <div className="absolute inset-0 bg-[url('/images/hero-pattern.svg')] opacity-5"></div>
+      <section className="relative bg-white py-24 overflow-hidden border-b border-gray-200">
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <div className="mb-8">
               <CarIcon className="mx-auto h-16 w-16 text-rosso" />
             </div>
-            <h1 className="text-4xl md:text-6xl font-bold text-white-soft mb-6">
+            <h1 className="text-4xl md:text-6xl font-bold text-black mb-6">
               Bienvenido a{' '}
               <span className="text-rosso">Grupo Roso</span>
             </h1>
-            <p className="text-xl md:text-2xl text-gray-neutral mb-8 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-xl md:text-2xl text-gray-700 mb-8 max-w-3xl mx-auto leading-relaxed">
               Tu tienda especializada en accesorios automotrices de alta calidad. 
               Encuentra todo lo que necesitas para personalizar y mejorar el rendimiento de tu vehículo.
             </p>
@@ -58,13 +57,13 @@ export default async function HomePage() {
       {/* Secciones de categorías y marcas removidas: la Home ahora depende solo de Products */}
 
       {/* Featured Products Section */}
-      <section className="py-16 bg-anthracite">
+      <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-white-soft mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-black mb-4">
               Productos Destacados
             </h2>
-            <p className="text-lg text-gray-neutral max-w-2xl mx-auto">
+            <p className="text-lg text-gray-700 max-w-2xl mx-auto">
               Descubre nuestros productos más populares y las últimas novedades en accesorios automotrices.
             </p>
           </div>
@@ -81,7 +80,7 @@ export default async function HomePage() {
       </section>
       
       {/* CTA Section */}
-      <section className="py-16 bg-gradient-to-r from-rosso to-red-700">
+      <section className="py-16 bg-rosso">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
             ¿Necesitas ayuda para encontrar el accesorio perfecto?

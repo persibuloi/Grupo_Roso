@@ -18,13 +18,13 @@ export default {
     },
     extend: {
       colors: {
-        // Paleta personalizada para Grupo Roso
-        anthracite: '#111111',
+        // Paleta personalizada para Grupo Roso - Tema Claro
+        anthracite: '#FFFFFF', // Cambiado a blanco
         rosso: '#C1121F',
-        'gray-neutral': '#A0A0A0',
-        'white-soft': '#F5F5F5',
-        'gray-dark': '#333333',
-        'gray-light': '#F9F9F9',
+        'gray-neutral': '#666666', // Gris más oscuro para mejor contraste
+        'white-soft': '#FFFFFF', // Blanco puro
+        'gray-dark': '#F5F5F5', // Gris muy claro
+        'gray-light': '#FFFFFF', // Blanco puro
         
         // Mantener colores del sistema
         border: "hsl(var(--border))",

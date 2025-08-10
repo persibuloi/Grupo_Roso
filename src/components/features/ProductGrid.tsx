@@ -45,7 +45,7 @@ export function ProductGrid({ products, loading = false, className }: ProductGri
         <div className="max-w-md mx-auto">
           <div className="mb-4">
             <svg
-              className="mx-auto h-16 w-16 text-gray-neutral"
+              className="mx-auto h-16 w-16 text-gray-400"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -58,10 +58,10 @@ export function ProductGrid({ products, loading = false, className }: ProductGri
               />
             </svg>
           </div>
-          <h3 className="text-lg font-medium text-white-soft mb-2">
+          <h3 className="text-lg font-medium text-black mb-2">
             No se encontraron productos
           </h3>
-          <p className="text-gray-neutral mb-6">
+          <p className="text-gray-700 mb-6">
             No hay productos que coincidan con los filtros seleccionados. 
             Intenta ajustar tus criterios de búsqueda.
           </p>
@@ -87,7 +87,7 @@ export function ProductGrid({ products, loading = false, className }: ProductGri
 
 function ProductCardSkeleton() {
   return (
-    <div className="bg-anthracite rounded-lg border border-gray-dark overflow-hidden">
+    <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
       {/* Image skeleton */}
       <Skeleton className="aspect-square w-full" />
       
