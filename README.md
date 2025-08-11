@@ -1,8 +1,30 @@
-# Grupo Roso - Tienda de Accesorios Automotrices
+# Grupo Rosso - E-commerce Platform
 
 ## 🚗 Descripción
 
-Aplicación web moderna y elegante para **Grupo Roso**, tienda especializada en accesorios automotrices de alta calidad. Desarrollada con Next.js 14+, React, TypeScript y Tailwind CSS, integrada completamente con Airtable como backend.
+Plataforma de comercio electrónico especializada en accesorios automotrices, construida con Next.js 15 y integrada con Airtable como CMS.
+
+## 🆕 **NUEVO PANEL DE ADMINISTRACIÓN**
+
+El proyecto incluye un **panel de administración completamente renovado** con sistema de autenticación unificado y catálogos especializados para vendedores y distribuidores.
+
+### **🔐 Acceso al Panel**
+- **URL**: `/admin-login.html`
+- **Credenciales**:
+  - Admin: `admin@gruporosso.com` / `admin123`
+  - Vendedor: `vendedor@gruporosso.com` / `vendedor123`
+  - Distribuidor: `distribuidor@gruporosso.com` / `distribuidor123`
+
+### **📋 Funcionalidades**
+- ✅ **Dashboard unificado** para todos los roles
+- ✅ **Catálogo de vendedores** con precios retail
+- ✅ **Catálogo de distribuidores** con precios mayorista
+- ✅ **Gestión de usuarios** (solo admin)
+- ✅ **Exportación CSV/Excel** de productos
+- ✅ **Filtros avanzados** y búsqueda en tiempo real
+- ✅ **Diseño responsive** optimizado para móvil y escritorio
+
+📖 **[Ver documentación completa del panel →](./ADMIN_PANEL_DOCUMENTATION.md)**
 
 ## ✨ Características Principales
 

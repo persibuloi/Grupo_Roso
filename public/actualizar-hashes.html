@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actualizar Hashes de Contraseña - Grupo Rosso</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #1f2937;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .step {
+            background: #f8f9fa;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border-left: 4px solid #3b82f6;
+        }
+        .step h3 {
+            margin-top: 0;
+            color: #1f2937;
+        }
+        button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #2563eb;
+        }
+        button:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+        .success {
+            background: #d1fae5;
+            border-left-color: #10b981;
+            color: #065f46;
+        }
+        .error {
+            background: #fee2e2;
+            border-left-color: #ef4444;
+            color: #991b1b;
+        }
+        .info {
+            background: #dbeafe;
+            border-left-color: #3b82f6;
+            color: #1e40af;
+        }
+        .log {
+            background: #1f2937;
+            color: #f9fafb;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+            margin: 15px 0;
+        }
+        .credentials {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 Actualizar Hashes de Contraseña</h1>
+        
+        <div class="step info">
+            <h3>📋 Problema Detectado</h3>
+            <p>Los usuarios en Supabase tienen hashes de contraseña <code>undefined</code>. Esto impide el login correcto.</p>
+        </div>
+
+        <div class="credentials">
+            <h3>🔑 Contraseñas a Configurar:</h3>
+            <ul>
+                <li><strong>admin@gruporosso.com</strong> → admin123</li>
+                <li><strong>vendedor@gruporosso.com</strong> → vendedor123</li>
+                <li><strong>distribuidor@gruporosso.com</strong> → distribuidor123</li>
+            </ul>
+        </div>
+
+        <div class="step">
+            <h3>🔧 Paso 1: Generar Hashes</h3>
+            <p>Primero generamos los hashes correctos para cada contraseña:</p>
+            <button onclick="generarHashes()">Generar Hashes</button>
+            <div id="hashResults"></div>
+        </div>
+
+        <div class="step">
+            <h3>📤 Paso 2: Actualizar en Supabase</h3>
+            <p>Actualizamos los hashes en la base de datos:</p>
+            <button onclick="actualizarHashes()" id="updateBtn" disabled>Actualizar Hashes en Supabase</button>
+            <div id="updateResults"></div>
+        </div>
+
+        <div class="step">
+            <h3>✅ Paso 3: Probar Login</h3>
+            <p>Probamos el login con las nuevas credenciales:</p>
+            <button onclick="probarLogin()" id="testBtn" disabled>Probar Login Admin</button>
+            <div id="loginResults"></div>
+        </div>
+
+        <div class="log" id="log"></div>
+    </div>
+
+    <script>
+        let generatedHashes = {};
+
+        function log(message) {
+            const logElement = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            logElement.textContent += `[${timestamp}] ${message}\n`;
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+
+        // Función de hash SHA-256 con salt
+        async function hashPassword(password) {
+            const salt = 'grupo_rosso_salt_2024';
+            const encoder = new TextEncoder();
+            const data = encoder.encode(password + salt);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        async function generarHashes() {
+            log('🔐 Generando hashes de contraseña...');
+            
+            const passwords = {
+                'admin@gruporosso.com': 'admin123',
+                'vendedor@gruporosso.com': 'vendedor123',
+                'distribuidor@gruporosso.com': 'distribuidor123'
+            };
+
+            const hashResults = document.getElementById('hashResults');
+            let html = '<div style="margin-top: 15px;"><h4>Hashes Generados:</h4>';
+
+            for (const [email, password] of Object.entries(passwords)) {
+                const hash = await hashPassword(password);
+                generatedHashes[email] = hash;
+                html += `<p><strong>${email}</strong><br>`;
+                html += `Contraseña: <code>${password}</code><br>`;
+                html += `Hash: <code style="font-size: 12px;">${hash}</code></p>`;
+                log(`✅ Hash generado para ${email}`);
+            }
+
+            html += '</div>';
+            hashResults.innerHTML = html;
+            
+            document.getElementById('updateBtn').disabled = false;
+            log('🎯 Todos los hashes generados correctamente');
+        }
+
+        async function actualizarHashes() {
+            log('📤 Actualizando hashes en Supabase...');
+            
+            const updateResults = document.getElementById('updateResults');
+            let html = '<div style="margin-top: 15px;"><h4>Resultados de Actualización:</h4>';
+            let allSuccess = true;
+
+            for (const [email, hash] of Object.entries(generatedHashes)) {
+                try {
+                    log(`📝 Actualizando ${email}...`);
+                    
+                    const response = await fetch('/api/users/update-hash', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            email: email,
+                            password_hash: hash
+                        })
+                    });
+
+                    const result = await response.json();
+                    
+                    if (response.ok) {
+                        html += `<p class="success">✅ ${email} - Hash actualizado correctamente</p>`;
+                        log(`✅ ${email} actualizado exitosamente`);
+                    } else {
+                        html += `<p class="error">❌ ${email} - Error: ${result.error}</p>`;
+                        log(`❌ Error actualizando ${email}: ${result.error}`);
+                        allSuccess = false;
+                    }
+                } catch (error) {
+                    html += `<p class="error">❌ ${email} - Error de conexión: ${error.message}</p>`;
+                    log(`❌ Error de conexión para ${email}: ${error.message}`);
+                    allSuccess = false;
+                }
+            }
+
+            html += '</div>';
+            updateResults.innerHTML = html;
+            
+            if (allSuccess) {
+                document.getElementById('testBtn').disabled = false;
+                log('🎉 Todos los hashes actualizados correctamente');
+            } else {
+                log('⚠️ Algunos hashes no se pudieron actualizar');
+            }
+        }
+
+        async function probarLogin() {
+            log('🔍 Probando login con admin@gruporosso.com...');
+            
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: 'admin@gruporosso.com',
+                        password: 'admin123'
+                    })
+                });
+
+                const result = await response.json();
+                const loginResults = document.getElementById('loginResults');
+                
+                if (response.ok) {
+                    loginResults.innerHTML = `
+                        <div class="success" style="margin-top: 15px;">
+                            <h4>🎉 ¡LOGIN EXITOSO!</h4>
+                            <p><strong>Usuario:</strong> ${result.user.email}</p>
+                            <p><strong>Rol:</strong> ${result.user.role}</p>
+                            <p><strong>Activo:</strong> ${result.user.active ? 'Sí' : 'No'}</p>
+                            <button onclick="window.location.href='/admin-login.html'">Ir al Panel de Login</button>
+                        </div>
+                    `;
+                    log('🎉 ¡LOGIN EXITOSO! El sistema de autenticación está funcionando');
+                } else {
+                    loginResults.innerHTML = `
+                        <div class="error" style="margin-top: 15px;">
+                            <h4>❌ Login Falló</h4>
+                            <p><strong>Error:</strong> ${result.error}</p>
+                            <p>Revisa los logs para más detalles</p>
+                        </div>
+                    `;
+                    log(`❌ Login falló: ${result.error}`);
+                }
+            } catch (error) {
+                const loginResults = document.getElementById('loginResults');
+                loginResults.innerHTML = `
+                    <div class="error" style="margin-top: 15px;">
+                        <h4>❌ Error de Conexión</h4>
+                        <p><strong>Error:</strong> ${error.message}</p>
+                    </div>
+                `;
+                log(`❌ Error de conexión: ${error.message}`);
+            }
+        }
+
+        // Inicializar log
+        log('🚀 Herramienta de actualización de hashes iniciada');
+        log('📋 Problema: Hashes de contraseña undefined en Supabase');
+        log('🎯 Objetivo: Actualizar hashes y restaurar funcionalidad de login');
+    </script>
+</body>
+</html>

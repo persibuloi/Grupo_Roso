@@ -101,13 +101,13 @@ export function FiltersPanel({
   );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3">
       {/* Active Filters */}
       {hasActiveFilters && (
         <Card>
-          <CardHeader>
+          <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-sm text-black">Filtros Activos</CardTitle>
+              <CardTitle className="text-xs text-black">Filtros Activos</CardTitle>
               <Button
                 variant="ghost"
                 size="sm"
@@ -118,7 +118,7 @@ export function FiltersPanel({
               </Button>
             </div>
           </CardHeader>
-          <CardContent className="space-y-2">
+          <CardContent className="pt-2 space-y-1">
             {currentFilters.category && (
               <Badge variant="rosso" className="mr-2">
                 Categoría: {categories.find(c => c.slug === currentFilters.category)?.name}
@@ -148,12 +148,12 @@ export function FiltersPanel({
         </Card>
       )}
 
-      {/* Ordenamiento */}
+      {/* Ordenar Por */}
       <Card>
-        <CardHeader>
-          <CardTitle className="text-sm text-black">Ordenar Por</CardTitle>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-xs text-black">Ordenar Por</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="pt-2">
           <select
             value={currentFilters.sortBy || 'newest'}
             onChange={(e) => updateFilters({ sortBy: e.target.value as FilterOptions['sortBy'] })}
@@ -169,10 +169,10 @@ export function FiltersPanel({
 
       {/* Categorías */}
       <Card>
-        <CardHeader>
-          <CardTitle className="text-sm text-black">Categorías</CardTitle>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-xs text-black">Categorías</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="pt-2">
           <select
             value={currentFilters.category || ''}
             onChange={(e) => updateFilters({ category: e.target.value || undefined })}
@@ -190,10 +190,10 @@ export function FiltersPanel({
 
       {/* Marcas */}
       <Card>
-        <CardHeader>
-          <CardTitle className="text-sm text-black">Marcas</CardTitle>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-xs text-black">Marcas</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="pt-2">
           <select
             value={currentFilters.brand || ''}
             onChange={(e) => updateFilters({ brand: e.target.value || undefined })}
@@ -211,11 +211,11 @@ export function FiltersPanel({
 
       {/* Rango de Precios */}
       <Card>
-        <CardHeader>
-          <CardTitle className="text-sm text-black">Rango de Precios (USD)</CardTitle>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-xs text-black">Rango de Precios (USD)</CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
+        <CardContent className="pt-2">
+          <div className="space-y-2">
             {/* Valores actuales */}
             <div className="flex justify-between text-sm text-gray-700 font-medium">
               <span>${localPriceMin}</span>
@@ -223,7 +223,7 @@ export function FiltersPanel({
             </div>
             
             {/* Range Sliders Separados */}
-            <div className="space-y-3">
+            <div className="space-y-2">
               {/* Precio Mínimo */}
               <div>
                 <label className="block text-xs text-gray-700 mb-1">Precio Mínimo: ${localPriceMin}</label>
@@ -297,10 +297,10 @@ export function FiltersPanel({
 
       {/* Disponibilidad */}
       <Card>
-        <CardHeader>
-          <CardTitle className="text-sm text-black">Disponibilidad</CardTitle>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-xs text-black">Disponibilidad</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="pt-2">
           <label className="flex items-center space-x-3 cursor-pointer">
             <input
               type="checkbox"

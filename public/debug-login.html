@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Login - Grupo Rosso</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #1f2937;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #2563eb;
+        }
+        button:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+        .log {
+            background: #1f2937;
+            color: #f9fafb;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+            margin: 15px 0;
+        }
+        .result {
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+        }
+        .success {
+            background: #d1fae5;
+            border: 1px solid #10b981;
+            color: #065f46;
+        }
+        .error {
+            background: #fee2e2;
+            border: 1px solid #ef4444;
+            color: #991b1b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Debug Login - Grupo Rosso</h1>
+        
+        <p>Esta herramienta probará el login paso a paso para identificar exactamente dónde está el problema.</p>
+        
+        <div>
+            <button onclick="testLogin()">🔐 Probar Login Admin</button>
+            <button onclick="testHash()">🔑 Probar Hash</button>
+            <button onclick="clearLog()">🗑️ Limpiar Log</button>
+        </div>
+
+        <div id="result"></div>
+        <div class="log" id="log"></div>
+    </div>
+
+    <script>
+        function log(message) {
+            const logElement = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            logElement.textContent += `[${timestamp}] ${message}\n`;
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+
+        function clearLog() {
+            document.getElementById('log').textContent = '';
+            document.getElementById('result').innerHTML = '';
+        }
+
+        function showResult(message, type) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = `<div class="result ${type}">${message}</div>`;
+        }
+
+        // Función de hash EXACTA que usamos en la herramienta
+        async function hashPassword(password) {
+            const salt = 'grupo_rosso_salt_2024';
+            const encoder = new TextEncoder();
+            const data = encoder.encode(password + salt);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        async function testHash() {
+            log('🔑 Probando generación de hash...');
+            
+            const password = 'admin123';
+            const hash = await hashPassword(password);
+            
+            log(`📝 Password: ${password}`);
+            log(`🔑 Hash generado: ${hash}`);
+            log(`🔑 Hash esperado: 7ecd13d8cb7dd26c8c816fd571971e59996d4c5523d656e80ccf037ec4878a4ac`);
+            
+            const expectedHash = '7ecd13d8cb7dd26c8c816fd571971e59996d4c5523d656e80ccf037ec4878a4ac';
+            
+            if (hash === expectedHash) {
+                showResult('✅ Hash correcto - La función de hash funciona perfectamente', 'success');
+                log('✅ Hash CORRECTO');
+            } else {
+                showResult('❌ Hash incorrecto - Hay un problema con la función de hash', 'error');
+                log('❌ Hash INCORRECTO');
+            }
+        }
+
+        async function testLogin() {
+            log('🔐 Iniciando test de login...');
+            
+            const email = 'admin@gruporosso.com';
+            const password = 'admin123';
+            
+            log(`📧 Email: ${email}`);
+            log(`🔑 Password: ${password}`);
+            
+            // Generar hash local para comparar
+            const localHash = await hashPassword(password);
+            log(`🔑 Hash local generado: ${localHash}`);
+            
+            try {
+                log('📤 Enviando petición de login...');
+                
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                log(`📊 Status de respuesta: ${response.status} (${response.statusText})`);
+                
+                const result = await response.json();
+                log(`📋 Respuesta completa: ${JSON.stringify(result, null, 2)}`);
+
+                if (response.ok && result.success) {
+                    showResult(`✅ LOGIN EXITOSO! Usuario: ${result.user.email} (${result.user.role})`, 'success');
+                    log('🎉 LOGIN EXITOSO');
+                } else {
+                    showResult(`❌ LOGIN FALLÓ: ${result.error || 'Error desconocido'}`, 'error');
+                    log(`❌ LOGIN FALLÓ: ${result.error}`);
+                    
+                    // Información adicional para debugging
+                    if (response.status === 401) {
+                        log('🔍 Error 401 - Credenciales incorrectas o problema de hash');
+                        log('💡 Posibles causas:');
+                        log('   - Hash en base de datos no coincide');
+                        log('   - Función de hash diferente en servidor');
+                        log('   - Campo de base de datos incorrecto');
+                        log('   - Usuario no existe o está inactivo');
+                    }
+                }
+                
+            } catch (error) {
+                showResult(`❌ ERROR DE CONEXIÓN: ${error.message}`, 'error');
+                log(`❌ Error de conexión: ${error.message}`);
+            }
+        }
+
+        // Inicializar
+        log('🚀 Debug Login iniciado');
+        log('🎯 Objetivo: Identificar por qué falla el login con 401');
+        log('📋 Credenciales a probar: admin@gruporosso.com / admin123');
+        log('');
+        log('👆 Haz clic en "Probar Hash" primero, luego "Probar Login"');
+    </script>
+</body>
+</html>

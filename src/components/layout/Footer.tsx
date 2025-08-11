@@ -132,11 +132,11 @@ export function Footer() {
                 Términos y Condiciones
               </Link>
               <Link
-                href="/admin"
+                href="/admin-login.html"
                 className="text-gray-500 hover:text-rosso transition-colors duration-200 text-sm"
                 title="Panel de Administración - Solo Empleados"
               >
-                Admin
+                admin
               </Link>
             </div>
           </div>

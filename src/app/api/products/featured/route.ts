@@ -4,7 +4,8 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: NextRequest) {
-  console.log('🌟 API Featured Products - Obteniendo productos destacados...');
+  const timestamp = new Date().toISOString();
+  console.log(`🌟 [${timestamp}] API Featured Products - Iniciando solicitud...`);
   
   try {
     if (!process.env.AIRTABLE_API_KEY) {
@@ -14,19 +15,39 @@ export async function GET(request: NextRequest) {
       throw new Error('AIRTABLE_BASE_ID no está definido');
     }
     
+    const tableName = process.env.AIRTABLE_PRODUCTS_TABLE || 'Products';
+    console.log(`🌟 [${timestamp}] Usando tabla: ${tableName}`);
+    
     const Airtable = require('airtable');
     
-    console.log('🌟 API Featured Products - Configurando Airtable...');
+    console.log(`🌟 [${timestamp}] Configurando Airtable...`);
     Airtable.configure({ apiKey: process.env.AIRTABLE_API_KEY });
     const base = Airtable.base(process.env.AIRTABLE_BASE_ID);
     
-    console.log('🌟 API Featured Products - Obteniendo registros destacados...');
-    const records = await base('Products').select({
-      filterByFormula: 'AND({Active}, {Destacado})', // Filtrar solo productos activos Y destacados
-      maxRecords: 100
+    console.log(`🌟 [${timestamp}] Obteniendo registros destacados...`);
+    
+    // Intentar obtener productos activos (sin filtro de destacado por ahora)
+    let records = await base(tableName).select({
+      filterByFormula: '{Active}', // Solo productos activos
+      maxRecords: 20,
+      sort: [{ field: 'createdTime', direction: 'desc' }] // Los más recientes primero
     }).all();
     
-    console.log(`🌟 Registros obtenidos: ${records.length}`);
+    console.log(`🌟 [${timestamp}] Registros activos encontrados: ${records.length}`);
+    
+    // Filtrar productos destacados en el código si el campo existe
+    const featuredRecords = records.filter(record => {
+      const fields = record.fields;
+      return fields.Destacado === true || fields.Featured === true;
+    });
+    
+    if (featuredRecords.length > 0) {
+      console.log(`✨ [${timestamp}] Productos marcados como destacados: ${featuredRecords.length}`);
+      records = featuredRecords;
+    } else {
+      console.log(`⚠️ [${timestamp}] No hay productos destacados, usando productos activos más recientes`);
+      records = records.slice(0, 12); // Usar los 12 más recientes
+    }
 
     const slugify = (s: string) => String(s || '').toLowerCase().trim().replace(/\s+/g, '-');
     const toStr = (v: any): string => {
@@ -75,13 +96,14 @@ export async function GET(request: NextRequest) {
       };
     });
 
-    console.log(`🌟 Productos destacados encontrados: ${products.length}`);
+    console.log(`🌟 [${timestamp}] Productos procesados: ${products.length}`);
 
     if (products.length === 0) {
+      console.warn(`⚠️ [${timestamp}] No se encontraron productos para mostrar`);
       return NextResponse.json({ 
         products: [],
         total: 0,
-        message: 'No hay productos marcados como destacados'
+        message: 'No hay productos disponibles para mostrar como destacados'
       });
     }
 
@@ -89,11 +111,13 @@ export async function GET(request: NextRequest) {
     const shuffledProducts = products.sort(() => Math.random() - 0.5);
     const selectedProducts = shuffledProducts.slice(0, 8);
 
-    console.log(`🌟 Productos destacados seleccionados: ${selectedProducts.length}`);
+    console.log(`✅ [${timestamp}] Productos destacados enviados: ${selectedProducts.length}`);
+    console.log(`✅ [${timestamp}] Nombres: ${selectedProducts.map(p => p.name).join(', ')}`);
 
     return NextResponse.json({ 
       products: selectedProducts,
-      total: selectedProducts.length
+      total: selectedProducts.length,
+      timestamp: timestamp
     });
 
   } catch (error) {

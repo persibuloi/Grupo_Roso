@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Simple - Grupo Rosso</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #1f2937;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #374151;
+        }
+        input[type="email"], input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+        input[type="email"]:focus, input[type="password"]:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+        button {
+            width: 100%;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background: #2563eb;
+        }
+        button:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+        .message {
+            padding: 12px;
+            border-radius: 6px;
+            margin: 15px 0;
+            text-align: center;
+        }
+        .success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #10b981;
+        }
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #ef4444;
+        }
+        .credentials {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+        .credentials h3 {
+            margin-top: 0;
+            color: #92400e;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 Login Grupo Rosso</h1>
+        
+        <div class="credentials">
+            <h3>🔑 Credenciales de Prueba:</h3>
+            <p><strong>Admin:</strong> admin@gruporosso.com / admin123</p>
+            <p><strong>Vendedor:</strong> vendedor@gruporosso.com / vendedor123</p>
+            <p><strong>Distribuidor:</strong> distribuidor@gruporosso.com / distribuidor123</p>
+        </div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" value="admin@gruporosso.com" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Contraseña:</label>
+                <input type="password" id="password" name="password" value="admin123" required>
+            </div>
+            
+            <button type="submit" id="loginBtn">Iniciar Sesión</button>
+        </form>
+
+        <div id="message"></div>
+        
+        <div style="margin-top: 30px; text-align: center;">
+            <button onclick="fillAdmin()" style="width: auto; margin: 5px; padding: 8px 16px;">Admin</button>
+            <button onclick="fillVendedor()" style="width: auto; margin: 5px; padding: 8px 16px;">Vendedor</button>
+            <button onclick="fillDistribuidor()" style="width: auto; margin: 5px; padding: 8px 16px;">Distribuidor</button>
+        </div>
+    </div>
+
+    <script>
+        function showMessage(text, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.innerHTML = `<div class="message ${type}">${text}</div>`;
+        }
+
+        function fillAdmin() {
+            document.getElementById('email').value = 'admin@gruporosso.com';
+            document.getElementById('password').value = 'admin123';
+        }
+
+        function fillVendedor() {
+            document.getElementById('email').value = 'vendedor@gruporosso.com';
+            document.getElementById('password').value = 'vendedor123';
+        }
+
+        function fillDistribuidor() {
+            document.getElementById('email').value = 'distribuidor@gruporosso.com';
+            document.getElementById('password').value = 'distribuidor123';
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const loginBtn = document.getElementById('loginBtn');
+            
+            console.log('🔐 Intentando login con:', email);
+            
+            loginBtn.disabled = true;
+            loginBtn.textContent = 'Iniciando sesión...';
+            showMessage('Verificando credenciales...', 'success');
+            
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const result = await response.json();
+                console.log('📊 Respuesta del servidor:', result);
+
+                if (response.ok && result.success) {
+                    showMessage(`¡Login exitoso! Bienvenido ${result.user.email} (${result.user.role})`, 'success');
+                    
+                    // Guardar datos del usuario
+                    localStorage.setItem('user', JSON.stringify(result.user));
+                    
+                    // Redireccionar según rol
+                    setTimeout(() => {
+                        switch(result.user.role) {
+                            case 'admin':
+                                window.location.href = '/admin-dashboard.html';
+                                break;
+                            case 'vendedor':
+                                window.location.href = '/admin/catalogo-vendedores';
+                                break;
+                            case 'distribuidor':
+                                window.location.href = '/admin/catalogo-distribuidores';
+                                break;
+                            default:
+                                showMessage('Rol no reconocido', 'error');
+                        }
+                    }, 2000);
+                    
+                } else {
+                    showMessage(`Error: ${result.error || 'Login fallido'}`, 'error');
+                    console.error('❌ Error de login:', result);
+                }
+                
+            } catch (error) {
+                showMessage(`Error de conexión: ${error.message}`, 'error');
+                console.error('❌ Error de conexión:', error);
+            }
+            
+            loginBtn.disabled = false;
+            loginBtn.textContent = 'Iniciar Sesión';
+        });
+
+        // Auto-llenar con credenciales admin al cargar
+        console.log('🚀 Panel de login cargado');
+        console.log('🔑 Credenciales pre-cargadas: admin@gruporosso.com / admin123');
+    </script>
+</body>
+</html>

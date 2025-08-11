@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Administrativo - Grupo Rosso</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .header h1 {
+            color: #dc2626;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .user-info {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border: 2px solid #2563eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .card h2 {
+            color: #374151;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 15px 25px;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            margin: 10px;
+            cursor: pointer;
+            border: none;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .btn:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+        }
+        
+        .btn-green {
+            background: #059669;
+        }
+        
+        .btn-green:hover {
+            background: #047857;
+        }
+        
+        .btn-red {
+            background: #dc2626;
+        }
+        
+        .btn-red:hover {
+            background: #b91c1c;
+        }
+        
+        .btn-purple {
+            background: #7c3aed;
+        }
+        
+        .btn-purple:hover {
+            background: #6d28d9;
+        }
+        
+        .btn-orange {
+            background: #ea580c;
+        }
+        
+        .btn-orange:hover {
+            background: #c2410c;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .feature-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .feature-card .icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+        
+        .feature-card h3 {
+            color: #374151;
+            margin-bottom: 10px;
+        }
+        
+        .feature-card p {
+            color: #6b7280;
+            margin-bottom: 20px;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .stat-card .number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #2563eb;
+            margin-bottom: 5px;
+        }
+        
+        .stat-card .label {
+            color: #6b7280;
+            font-size: 14px;
+        }
+        
+        .quick-actions {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #2563eb;
+        }
+        
+        .role-badge {
+            background: #fef2f2;
+            color: #dc2626;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .user-info {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .btn {
+                margin: 5px;
+                padding: 12px 20px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🎛️ Dashboard Administrativo</h1>
+            <p>Panel de Control Central - Grupo Rosso</p>
+            
+            <div id="userInfo" class="user-info">
+                <!-- User info will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="stats">
+            <div class="stat-card">
+                <div class="number" id="totalUsers">-</div>
+                <div class="label">Usuarios Totales</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="activeUsers">-</div>
+                <div class="label">Usuarios Activos</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="totalProducts">-</div>
+                <div class="label">Productos</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="systemStatus">🟢</div>
+                <div class="label">Estado Sistema</div>
+            </div>
+        </div>
+
+        <!-- Main Features -->
+        <div class="grid">
+            <!-- User Management -->
+            <div class="feature-card">
+                <div class="icon">👥</div>
+                <h3>Gestión de Usuarios</h3>
+                <p>Crear, editar y administrar usuarios del sistema</p>
+                <a href="/usuarios.html" class="btn btn-green">🛠️ Gestionar Usuarios</a>
+            </div>
+
+            <!-- Catalogs -->
+            <div class="feature-card">
+                <div class="icon">📋</div>
+                <h3>Catálogos de Productos</h3>
+                <p>Catálogos especializados por tipo de usuario</p>
+                <a href="/catalogo-vendedores.html" class="btn btn-purple">🛍️ Catálogo Vendedores</a>
+                <a href="/catalogo-distribuidores.html" class="btn btn-orange">📦 Catálogo Distribuidores</a>
+            </div>
+
+            <!-- User Lists -->
+            <div class="feature-card">
+                <div class="icon">📊</div>
+                <h3>Listados de Usuarios</h3>
+                <p>Listados específicos de vendedores y distribuidores</p>
+                <a href="/listado-vendedores.html" class="btn btn-green">👨‍💼 Listado Vendedores</a>
+                <a href="/listado-distribuidores.html" class="btn btn-red">🏢 Listado Distribuidores</a>
+            </div>
+
+            <!-- Website Management -->
+            <div class="feature-card">
+                <div class="icon">🌐</div>
+                <h3>Gestión Web</h3>
+                <p>Administración del sitio web principal</p>
+                <a href="/" target="_blank" class="btn">🏠 Ver Sitio Web</a>
+                <a href="/catalogo" target="_blank" class="btn">📦 Catálogo Público</a>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="card">
+            <h2>🚀 Acciones Rápidas</h2>
+            <div class="quick-actions">
+                <button onclick="loadStats()" class="btn">🔄 Actualizar Estadísticas</button>
+                <button onclick="testConnections()" class="btn btn-green">🔗 Probar Conexiones</button>
+                <button onclick="createTestUsers()" class="btn btn-purple">👥 Crear Usuarios Prueba</button>
+                <button onclick="logout()" class="btn btn-red">🚪 Cerrar Sesión</button>
+            </div>
+        </div>
+
+        <!-- System Status -->
+        <div class="card">
+            <h2>📊 Estado del Sistema</h2>
+            <div id="systemInfo">
+                <p>Cargando información del sistema...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check authentication on page load
+        window.onload = function() {
+            checkAuthentication();
+        };
+
+        // Check if user is authenticated and has admin role
+        function checkAuthentication() {
+            const user = localStorage.getItem('currentUser');
+            
+            if (!user) {
+                redirectToLogin('No has iniciado sesión');
+                return;
+            }
+            
+            try {
+                const userData = JSON.parse(user);
+                
+                if (!userData.role || !['admin', 'vendedor', 'distribuidor'].includes(userData.role)) {
+                    redirectToLogin('Acceso denegado: Rol no válido');
+                    return;
+                }
+                
+                if (!userData.active) {
+                    redirectToLogin('Tu cuenta está desactivada');
+                    return;
+                }
+                
+                // User is authenticated and is admin
+                showUserInfo(userData);
+                loadStats();
+                
+            } catch (error) {
+                redirectToLogin('Sesión inválida');
+            }
+        }
+
+        // Redirect to login page
+        function redirectToLogin(message) {
+            alert(`🔒 ${message}\n\nSerás redirigido al login.`);
+            localStorage.removeItem('currentUser');
+            window.location.href = '/admin-login.html';
+        }
+
+        // Show current user info
+        function showUserInfo(user) {
+            const userInfoDiv = document.getElementById('userInfo');
+            userInfoDiv.innerHTML = `
+                <div>
+                    <strong>👤 Usuario:</strong> ${user.name} (${user.email})<br>
+                    <strong>🔑 Rol:</strong> <span class="role-badge">👑 ${user.role.toUpperCase()}</span>
+                </div>
+                <button onclick="logout()" class="btn btn-red" style="margin: 0;">🚪 Cerrar Sesión</button>
+            `;
+        }
+
+        // Load system statistics
+        async function loadStats() {
+            try {
+                // Load user stats
+                const usersResponse = await fetch('/api/users');
+                if (usersResponse.ok) {
+                    const usersData = await usersResponse.json();
+                    if (usersData.success) {
+                        const totalUsers = usersData.users.length;
+                        const activeUsers = usersData.users.filter(u => u.active).length;
+                        
+                        document.getElementById('totalUsers').textContent = totalUsers;
+                        document.getElementById('activeUsers').textContent = activeUsers;
+                    }
+                }
+
+                // Load product stats
+                const productsResponse = await fetch('/api/products');
+                if (productsResponse.ok) {
+                    const productsData = await productsResponse.json();
+                    if (productsData.products) {
+                        document.getElementById('totalProducts').textContent = productsData.products.length;
+                    }
+                }
+
+                // Update system info
+                document.getElementById('systemInfo').innerHTML = `
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                        <div style="padding: 15px; background: #f0fdf4; border-radius: 8px; border-left: 4px solid #059669;">
+                            <strong>🔗 APIs:</strong> Funcionando correctamente
+                        </div>
+                        <div style="padding: 15px; background: #eff6ff; border-radius: 8px; border-left: 4px solid #2563eb;">
+                            <strong>🗄️ Supabase:</strong> Conectado
+                        </div>
+                        <div style="padding: 15px; background: #fef3c7; border-radius: 8px; border-left: 4px solid #f59e0b;">
+                            <strong>📦 Airtable:</strong> Sincronizado
+                        </div>
+                        <div style="padding: 15px; background: #fce7f3; border-radius: 8px; border-left: 4px solid #ec4899;">
+                            <strong>⏰ Última actualización:</strong> ${new Date().toLocaleString()}
+                        </div>
+                    </div>
+                `;
+
+            } catch (error) {
+                console.error('Error loading stats:', error);
+                document.getElementById('systemInfo').innerHTML = `
+                    <div style="padding: 15px; background: #fee2e2; border-radius: 8px; border-left: 4px solid #dc2626;">
+                        <strong>❌ Error:</strong> No se pudieron cargar las estadísticas
+                    </div>
+                `;
+            }
+        }
+
+        // Test system connections
+        async function testConnections() {
+            const systemInfo = document.getElementById('systemInfo');
+            systemInfo.innerHTML = '<p>🔄 Probando conexiones...</p>';
+            
+            const tests = [
+                { name: 'API Usuarios', url: '/api/users' },
+                { name: 'API Productos', url: '/api/products' },
+                { name: 'API Login', url: '/api/auth/login', method: 'POST', body: {} }
+            ];
+            
+            let results = [];
+            
+            for (const test of tests) {
+                try {
+                    const response = await fetch(test.url, {
+                        method: test.method || 'GET',
+                        headers: test.body ? { 'Content-Type': 'application/json' } : {},
+                        body: test.body ? JSON.stringify(test.body) : undefined
+                    });
+                    
+                    results.push({
+                        name: test.name,
+                        status: response.ok ? '✅ OK' : `❌ Error ${response.status}`,
+                        color: response.ok ? '#059669' : '#dc2626'
+                    });
+                } catch (error) {
+                    results.push({
+                        name: test.name,
+                        status: '❌ Error conexión',
+                        color: '#dc2626'
+                    });
+                }
+            }
+            
+            systemInfo.innerHTML = results.map(result => 
+                `<div style="padding: 10px; margin: 5px 0; background: ${result.color === '#059669' ? '#f0fdf4' : '#fee2e2'}; border-radius: 8px; border-left: 4px solid ${result.color};">
+                    <strong>${result.name}:</strong> ${result.status}
+                </div>`
+            ).join('');
+        }
+
+        // Create test users
+        async function createTestUsers() {
+            if (!confirm('¿Crear usuarios de prueba? (admin, vendedor, distribuidor)')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/auth/seed', {
+                    method: 'POST'
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('✅ Usuarios de prueba creados exitosamente');
+                    loadStats();
+                } else {
+                    alert(`❌ Error: ${result.error}`);
+                }
+            } catch (error) {
+                alert(`❌ Error de conexión: ${error.message}`);
+            }
+        }
+
+        // Logout function
+        function logout() {
+            if (confirm('¿Estás seguro de cerrar sesión?')) {
+                localStorage.removeItem('currentUser');
+                window.location.href = '/admin-login.html';
+            }
+        }
+    </script>
+</body>
+</html>

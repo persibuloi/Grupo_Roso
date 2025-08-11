@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listado de Distribuidores - Grupo Rosso</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .controls {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            border-color: #f97316;
+        }
+        
+        .btn {
+            background: #f97316;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+        
+        .btn:hover {
+            background: #ea580c;
+            transform: translateY(-2px);
+        }
+        
+        .btn-green {
+            background: #10b981;
+        }
+        
+        .btn-green:hover {
+            background: #059669;
+        }
+        
+        .btn-red {
+            background: #ef4444;
+        }
+        
+        .btn-red:hover {
+            background: #dc2626;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .stat-card .number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #f97316;
+            margin-bottom: 5px;
+        }
+        
+        .stat-card .label {
+            color: #6b7280;
+            font-size: 14px;
+        }
+        
+        .users-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .user-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-left: 5px solid #f97316;
+        }
+        
+        .user-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        
+        .user-card .avatar {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            margin: 0 auto 15px;
+        }
+        
+        .user-card .name {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #1f2937;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+        
+        .user-card .email {
+            color: #6b7280;
+            margin-bottom: 15px;
+            text-align: center;
+            word-break: break-all;
+        }
+        
+        .user-card .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .status.active {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .status.inactive {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        .user-card .actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        
+        .user-card .btn {
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #6b7280;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #6b7280;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        @media (max-width: 768px) {
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-box {
+                min-width: auto;
+            }
+            
+            .users-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🏢 Listado de Distribuidores</h1>
+            <p>Gestión y administración de distribuidores registrados</p>
+        </div>
+        
+        <!-- Controls -->
+        <div class="controls">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="🔍 Buscar distribuidores por nombre o email...">
+            </div>
+            <div>
+                <button class="btn btn-green" onclick="refreshList()">🔄 Actualizar</button>
+                <a href="/admin-dashboard.html" class="btn">⬅️ Volver al Dashboard</a>
+            </div>
+        </div>
+        
+        <!-- Stats -->
+        <div class="stats">
+            <div class="stat-card">
+                <div class="number" id="totalDistributors">-</div>
+                <div class="label">Total Distribuidores</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="activeDistributors">-</div>
+                <div class="label">Distribuidores Activos</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="inactiveDistributors">-</div>
+                <div class="label">Distribuidores Inactivos</div>
+            </div>
+        </div>
+        
+        <!-- Users Grid -->
+        <div id="usersContainer">
+            <div class="loading">
+                <h3>⏳ Cargando distribuidores...</h3>
+                <p>Obteniendo datos de la base de datos...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allDistributors = [];
+        let filteredDistributors = [];
+
+        // Función para obtener distribuidores
+        async function loadDistributors() {
+            try {
+                console.log('📊 Cargando distribuidores...');
+                
+                const response = await fetch('/api/users');
+                const result = await response.json();
+                
+                if (response.ok && result.success) {
+                    // Filtrar solo distribuidores
+                    allDistributors = result.users.filter(user => user.role === 'distribuidor');
+                    filteredDistributors = [...allDistributors];
+                    
+                    console.log(`✅ ${allDistributors.length} distribuidores cargados`);
+                    
+                    updateStats();
+                    renderDistributors();
+                } else {
+                    throw new Error(result.error || 'Error cargando distribuidores');
+                }
+            } catch (error) {
+                console.error('❌ Error:', error);
+                document.getElementById('usersContainer').innerHTML = `
+                    <div class="no-results">
+                        <h3>❌ Error al cargar distribuidores</h3>
+                        <p>${error.message}</p>
+                        <button class="btn" onclick="loadDistributors()">🔄 Reintentar</button>
+                    </div>
+                `;
+            }
+        }
+
+        // Función para actualizar estadísticas
+        function updateStats() {
+            const total = allDistributors.length;
+            const active = allDistributors.filter(d => d.active).length;
+            const inactive = total - active;
+            
+            document.getElementById('totalDistributors').textContent = total;
+            document.getElementById('activeDistributors').textContent = active;
+            document.getElementById('inactiveDistributors').textContent = inactive;
+        }
+
+        // Función para renderizar distribuidores
+        function renderDistributors() {
+            const container = document.getElementById('usersContainer');
+            
+            if (filteredDistributors.length === 0) {
+                container.innerHTML = `
+                    <div class="no-results">
+                        <h3>🏢 No se encontraron distribuidores</h3>
+                        <p>No hay distribuidores que coincidan con los criterios de búsqueda.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const html = `
+                <div class="users-grid">
+                    ${filteredDistributors.map(distributor => `
+                        <div class="user-card">
+                            <div class="avatar">🏢</div>
+                            <div class="name">${distributor.name || 'Sin nombre'}</div>
+                            <div class="email">${distributor.email}</div>
+                            <div class="status ${distributor.active ? 'active' : 'inactive'}">
+                                ${distributor.active ? '✅ Activo' : '❌ Inactivo'}
+                            </div>
+                            <div class="actions">
+                                <button class="btn" onclick="editDistributor('${distributor.id}')">✏️ Editar</button>
+                                <button class="btn ${distributor.active ? 'btn-red' : 'btn-green'}" 
+                                        onclick="toggleDistributorStatus('${distributor.id}', ${!distributor.active})">
+                                    ${distributor.active ? '🚫 Desactivar' : '✅ Activar'}
+                                </button>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            
+            container.innerHTML = html;
+        }
+
+        // Función de búsqueda
+        function filterDistributors() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            
+            filteredDistributors = allDistributors.filter(distributor => 
+                distributor.name?.toLowerCase().includes(searchTerm) ||
+                distributor.email.toLowerCase().includes(searchTerm)
+            );
+            
+            renderDistributors();
+        }
+
+        // Función para refrescar lista
+        function refreshList() {
+            loadDistributors();
+        }
+
+        // Función para editar distribuidor (placeholder)
+        function editDistributor(distributorId) {
+            alert(`Función de edición para distribuidor ${distributorId} - Por implementar`);
+        }
+
+        // Función para cambiar estado del distribuidor (placeholder)
+        function toggleDistributorStatus(distributorId, newStatus) {
+            alert(`Cambiar estado del distribuidor ${distributorId} a ${newStatus ? 'activo' : 'inactivo'} - Por implementar`);
+        }
+
+        // Event listeners
+        document.getElementById('searchInput').addEventListener('input', filterDistributors);
+
+        // Cargar distribuidores al inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Listado de distribuidores iniciado');
+            loadDistributors();
+        });
+    </script>
+</body>
+</html>

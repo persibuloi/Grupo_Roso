@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control de Usuarios - Grupo Rosso</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .header h1 {
+            color: #dc2626;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            margin: 5px;
+            cursor: pointer;
+            border: none;
+            font-size: 14px;
+        }
+        
+        .btn:hover {
+            background: #1d4ed8;
+        }
+        
+        .btn-green {
+            background: #059669;
+        }
+        
+        .btn-green:hover {
+            background: #047857;
+        }
+        
+        .btn-red {
+            background: #dc2626;
+        }
+        
+        .btn-red:hover {
+            background: #b91c1c;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        .users-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .users-table th,
+        .users-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .users-table th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        
+        .status-active {
+            color: #059669;
+            font-weight: bold;
+        }
+        
+        .status-inactive {
+            color: #dc2626;
+            font-weight: bold;
+        }
+        
+        .role-admin {
+            background: #fef2f2;
+            color: #dc2626;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .role-vendedor {
+            background: #eff6ff;
+            color: #2563eb;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .role-distribuidor {
+            background: #f0fdf4;
+            color: #059669;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .info {
+            background: #e7f3ff;
+            border: 2px solid #2563eb;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>👥 Control de Usuarios</h1>
+            <p>Gestión Simple de Usuarios - Supabase</p>
+        </div>
+
+        <!-- Actions -->
+        <div class="card">
+            <h2>🛠️ Acciones Rápidas</h2>
+            <button onclick="loadUsers()" class="btn">🔄 Cargar Usuarios</button>
+            <button onclick="showCreateForm()" class="btn btn-green">➕ Nuevo Usuario</button>
+            <button onclick="testConnection()" class="btn">🔗 Probar Conexión</button>
+        </div>
+
+        <!-- Create User Form -->
+        <div id="createForm" class="card hidden">
+            <h2>➕ Crear Nuevo Usuario</h2>
+            <form onsubmit="createUser(event)">
+                <div class="form-group">
+                    <label>Email:</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label>Nombre:</label>
+                    <input type="text" id="name" required>
+                </div>
+                <div class="form-group">
+                    <label>Contraseña:</label>
+                    <input type="password" id="password" required>
+                </div>
+                <div class="form-group">
+                    <label>Rol:</label>
+                    <select id="role" required>
+                        <option value="vendedor">🛍️ Vendedor</option>
+                        <option value="distribuidor">📦 Distribuidor</option>
+                        <option value="admin">👑 Admin</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-green">💾 Crear Usuario</button>
+                <button type="button" onclick="hideCreateForm()" class="btn">❌ Cancelar</button>
+            </form>
+        </div>
+
+        <!-- Connection Status -->
+        <div id="connectionStatus" class="info">
+            <h3>🔗 Estado de Conexión</h3>
+            <p id="statusText">Haz click en "Probar Conexión" para verificar el estado</p>
+        </div>
+
+        <!-- Users List -->
+        <div class="card">
+            <h2>📋 Lista de Usuarios</h2>
+            <div id="usersContainer">
+                <p>Haz click en "Cargar Usuarios" para ver la lista</p>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="card">
+            <h2>💡 Instrucciones</h2>
+            <div class="info">
+                <h3>🎯 Cómo usar este panel:</h3>
+                <ul style="margin: 15px 0; padding-left: 30px;">
+                    <li><strong>Probar Conexión:</strong> Verifica que la API funcione</li>
+                    <li><strong>Cargar Usuarios:</strong> Muestra todos los usuarios de Supabase</li>
+                    <li><strong>Nuevo Usuario:</strong> Crea un usuario con email, nombre, contraseña y rol</li>
+                    <li><strong>Gestión:</strong> Edita o elimina usuarios desde la tabla</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Test connection to API
+        async function testConnection() {
+            const statusText = document.getElementById('statusText');
+            statusText.textContent = 'Probando conexión...';
+            
+            try {
+                const response = await fetch('/api/users');
+                if (response.ok) {
+                    statusText.textContent = '✅ Conexión exitosa - API funcionando correctamente';
+                    statusText.style.color = '#059669';
+                } else {
+                    statusText.textContent = `❌ Error de conexión - Status: ${response.status}`;
+                    statusText.style.color = '#dc2626';
+                }
+            } catch (error) {
+                statusText.textContent = `❌ Error de red: ${error.message}`;
+                statusText.style.color = '#dc2626';
+            }
+        }
+
+        // Load users from API
+        async function loadUsers() {
+            const container = document.getElementById('usersContainer');
+            container.innerHTML = '<p>Cargando usuarios...</p>';
+            
+            try {
+                const response = await fetch('/api/users');
+                const data = await response.json();
+                
+                if (data.success && data.users) {
+                    displayUsers(data.users);
+                } else {
+                    container.innerHTML = `<p style="color: #dc2626;">Error: ${data.error || 'No se pudieron cargar los usuarios'}</p>`;
+                }
+            } catch (error) {
+                container.innerHTML = `<p style="color: #dc2626;">Error de conexión: ${error.message}</p>`;
+            }
+        }
+
+        // Display users in table
+        function displayUsers(users) {
+            const container = document.getElementById('usersContainer');
+            
+            if (users.length === 0) {
+                container.innerHTML = '<p>No hay usuarios registrados</p>';
+                return;
+            }
+
+            let html = `
+                <table class="users-table">
+                    <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>Nombre</th>
+                            <th>Rol</th>
+                            <th>Estado</th>
+                            <th>Creado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            users.forEach(user => {
+                const roleClass = `role-${user.role}`;
+                const statusClass = user.active ? 'status-active' : 'status-inactive';
+                const statusText = user.active ? '✅ Activo' : '❌ Inactivo';
+                const roleText = user.role === 'admin' ? '👑 Admin' : 
+                                user.role === 'vendedor' ? '🛍️ Vendedor' : '📦 Distribuidor';
+
+                html += `
+                    <tr>
+                        <td><strong>${user.email}</strong></td>
+                        <td>${user.name}</td>
+                        <td><span class="${roleClass}">${roleText}</span></td>
+                        <td><span class="${statusClass}">${statusText}</span></td>
+                        <td>${new Date(user.created_at).toLocaleDateString()}</td>
+                        <td>
+                            <button onclick="toggleUserStatus('${user.id}', ${user.active})" class="btn" style="font-size: 12px; padding: 5px 10px;">
+                                ${user.active ? '🚫 Desactivar' : '✅ Activar'}
+                            </button>
+                            <button onclick="deleteUser('${user.id}')" class="btn btn-red" style="font-size: 12px; padding: 5px 10px;">
+                                🗑️ Eliminar
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        // Show create form
+        function showCreateForm() {
+            document.getElementById('createForm').classList.remove('hidden');
+        }
+
+        // Hide create form
+        function hideCreateForm() {
+            document.getElementById('createForm').classList.add('hidden');
+            document.getElementById('createForm').querySelector('form').reset();
+        }
+
+        // Create new user
+        async function createUser(event) {
+            event.preventDefault();
+            
+            const formData = {
+                email: document.getElementById('email').value,
+                name: document.getElementById('name').value,
+                password: document.getElementById('password').value,
+                role: document.getElementById('role').value,
+                active: true
+            };
+
+            try {
+                const response = await fetch('/api/users', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('✅ Usuario creado exitosamente');
+                    hideCreateForm();
+                    loadUsers(); // Reload users list
+                } else {
+                    alert(`❌ Error: ${result.error}`);
+                }
+            } catch (error) {
+                alert(`❌ Error de conexión: ${error.message}`);
+            }
+        }
+
+        // Toggle user status
+        async function toggleUserStatus(userId, currentStatus) {
+            if (!confirm(`¿Estás seguro de ${currentStatus ? 'desactivar' : 'activar'} este usuario?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/users/${userId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ active: !currentStatus })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert(`✅ Usuario ${!currentStatus ? 'activado' : 'desactivado'} exitosamente`);
+                    loadUsers(); // Reload users list
+                } else {
+                    alert(`❌ Error: ${result.error}`);
+                }
+            } catch (error) {
+                alert(`❌ Error de conexión: ${error.message}`);
+            }
+        }
+
+        // Delete user
+        async function deleteUser(userId) {
+            if (!confirm('¿Estás seguro de eliminar este usuario? Esta acción no se puede deshacer.')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/users/${userId}`, {
+                    method: 'DELETE'
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('✅ Usuario eliminado exitosamente');
+                    loadUsers(); // Reload users list
+                } else {
+                    alert(`❌ Error: ${result.error}`);
+                }
+            } catch (error) {
+                alert(`❌ Error de conexión: ${error.message}`);
+            }
+        }
+
+        // Check authentication on page load
+        window.onload = function() {
+            checkAuthentication();
+        };
+
+        // Check if user is authenticated and has admin role
+        function checkAuthentication() {
+            const user = localStorage.getItem('currentUser');
+            
+            if (!user) {
+                redirectToLogin('No has iniciado sesión');
+                return;
+            }
+            
+            try {
+                const userData = JSON.parse(user);
+                
+                if (!userData.role || userData.role !== 'admin') {
+                    redirectToLogin('Acceso denegado: Solo administradores pueden gestionar usuarios');
+                    return;
+                }
+                
+                if (!userData.active) {
+                    redirectToLogin('Tu cuenta está desactivada');
+                    return;
+                }
+                
+                // User is authenticated and is admin
+                showUserInfo(userData);
+                testConnection();
+                
+            } catch (error) {
+                redirectToLogin('Sesión inválida');
+            }
+        }
+
+        // Redirect to login page
+        function redirectToLogin(message) {
+            alert(`🔒 ${message}\n\nSerás redirigido al login.`);
+            localStorage.removeItem('currentUser');
+            window.location.href = '/login.html';
+        }
+
+        // Show current user info
+        function showUserInfo(user) {
+            const header = document.querySelector('.header');
+            const userInfo = document.createElement('div');
+            userInfo.style.cssText = 'background: #e7f3ff; padding: 15px; border-radius: 8px; margin-top: 15px; border: 2px solid #2563eb;';
+            userInfo.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <strong>👤 Usuario:</strong> ${user.name} (${user.email})<br>
+                        <strong>🔑 Rol:</strong> <span style="background: #fef2f2; color: #dc2626; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: bold;">👑 ${user.role.toUpperCase()}</span>
+                    </div>
+                    <button onclick="logout()" class="btn btn-red" style="margin: 0;">🚪 Cerrar Sesión</button>
+                </div>
+            `;
+            header.appendChild(userInfo);
+        }
+
+        // Logout function
+        function logout() {
+            if (confirm('¿Estás seguro de cerrar sesión?')) {
+                localStorage.removeItem('currentUser');
+                window.location.href = '/login.html';
+            }
+        }
+    </script>
+</body>
+</html>

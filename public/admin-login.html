@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Administrativo - Grupo Rosso</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .login-container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 450px;
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo h1 {
+            color: #dc2626;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .logo p {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background: #1d4ed8;
+        }
+        
+        .error {
+            background: #fee2e2;
+            color: #dc2626;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .success {
+            background: #d1fae5;
+            color: #059669;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .demo-credentials {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 8px;
+            border-left: 4px solid #2563eb;
+        }
+        
+        .demo-credentials h4 {
+            color: #1e40af;
+            margin-bottom: 10px;
+        }
+        
+        .demo-credentials .cred-item {
+            margin: 10px 0;
+            padding: 8px;
+            background: white;
+            border-radius: 4px;
+            border-left: 3px solid #059669;
+        }
+        
+        .demo-credentials .cred-item strong {
+            color: #374151;
+        }
+        
+        .demo-credentials .cred-item .role {
+            font-size: 12px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+        
+        .role-admin {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+        
+        .role-vendedor {
+            background: #eff6ff;
+            color: #2563eb;
+        }
+        
+        .role-distribuidor {
+            background: #f0fdf4;
+            color: #059669;
+        }
+        
+        .info {
+            background: #e0f2fe;
+            color: #0369a1;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">
+            <a href="/" style="text-decoration: none; color: inherit;">
+                <h1>🚗 Grupo Rosso</h1>
+            </a>
+            <p>Sistema Administrativo Unificado</p>
+        </div>
+
+        <div id="errorMessage" class="error"></div>
+        <div id="successMessage" class="success"></div>
+
+        <form onsubmit="login(event)">
+            <div class="form-group">
+                <label for="email">📧 Email:</label>
+                <input type="email" id="email" required placeholder="tu@email.com">
+            </div>
+            
+            <div class="form-group">
+                <label for="password">🔒 Contraseña:</label>
+                <input type="password" id="password" required placeholder="Tu contraseña">
+            </div>
+            
+            <button type="submit" class="btn">🔑 Iniciar Sesión</button>
+        </form>
+
+        <div class="info">
+            <strong>🎯 Sistema Administrativo:</strong><br>
+            Ingresa con tus credenciales para acceder al panel de administración.
+        </div>
+        
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="/" style="color: #6b7280; text-decoration: none; font-size: 14px; hover: color: #f97316;">
+                ← Volver a la página principal
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Check if already logged in
+        window.onload = function() {
+            const user = localStorage.getItem('currentUser');
+            if (user) {
+                try {
+                    const userData = JSON.parse(user);
+                    redirectByRole(userData);
+                } catch (error) {
+                    localStorage.removeItem('currentUser');
+                }
+            }
+        };
+
+        async function login(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            hideMessages();
+            
+            // Show loading state
+            const submitBtn = event.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = '⏳ Verificando...';
+            submitBtn.disabled = true;
+            
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Store user data
+                    localStorage.setItem('currentUser', JSON.stringify(result.user));
+                    
+                    showSuccess(`✅ Bienvenido ${result.user.name}! Redirigiendo...`);
+                    
+                    // Redirect based on role
+                    setTimeout(() => {
+                        redirectByRole(result.user);
+                    }, 1500);
+                } else {
+                    showError(`❌ ${result.error || 'Credenciales incorrectas'}`);
+                }
+            } catch (error) {
+                showError(`❌ Error de conexión: ${error.message}`);
+            } finally {
+                // Restore button
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
+        }
+
+        // Redirect user based on their role
+        function redirectByRole(user) {
+            switch (user.role) {
+                case 'admin':
+                    window.location.href = '/admin-dashboard.html';
+                    break;
+                case 'vendedor':
+                    window.location.href = '/catalogo-vendedores.html';
+                    break;
+                case 'distribuidor':
+                    window.location.href = '/catalogo-distribuidores.html';
+                    break;
+                default:
+                    showError('❌ Rol no reconocido');
+            }
+        }
+        
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+        
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+        }
+        
+        function hideMessages() {
+            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

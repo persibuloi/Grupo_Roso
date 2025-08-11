@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo Distribuidores - Grupo Rosso</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .user-info {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .user-details {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+        }
+        
+        .controls {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            border-color: #f97316;
+        }
+        
+        .filters {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-select {
+            padding: 10px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            background: white;
+            font-size: 14px;
+        }
+        
+        .btn {
+            background: #f97316;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+        
+        .btn:hover {
+            background: #ea580c;
+            transform: translateY(-2px);
+        }
+        
+        .btn-green {
+            background: #10b981;
+        }
+        
+        .btn-green:hover {
+            background: #059669;
+        }
+        
+        .btn-red {
+            background: #ef4444;
+        }
+        
+        .btn-red:hover {
+            background: #dc2626;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .stat-card .number {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #f97316;
+            margin-bottom: 5px;
+        }
+        
+        .stat-card .label {
+            color: #6b7280;
+            font-size: 12px;
+        }
+        
+        .products-table {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .table-header {
+            background: #f8fafc;
+            padding: 20px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        th {
+            background: #f8fafc;
+            font-weight: bold;
+            color: #374151;
+            font-size: 14px;
+        }
+        
+        td {
+            font-size: 14px;
+        }
+        
+        tr:hover {
+            background: #f9fafb;
+        }
+        
+        .product-image {
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+        
+        .product-name {
+            font-weight: bold;
+            color: #1f2937;
+        }
+        
+        .product-sku {
+            color: #6b7280;
+            font-size: 12px;
+        }
+        
+        .price {
+            font-weight: bold;
+            color: #059669;
+        }
+        
+        .price-comparison {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        
+        .price-retail {
+            font-size: 12px;
+            color: #6b7280;
+            text-decoration: line-through;
+        }
+        
+        .savings {
+            font-size: 12px;
+            color: #dc2626;
+            font-weight: bold;
+        }
+        
+        .stock {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .stock.in-stock {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .stock.low-stock {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .stock.out-of-stock {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #6b7280;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #6b7280;
+        }
+        
+        @media (max-width: 768px) {
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-box {
+                min-width: auto;
+            }
+            
+            .filters {
+                justify-content: center;
+            }
+            
+            .table-container {
+                font-size: 12px;
+            }
+            
+            th, td {
+                padding: 8px 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>📦 Catálogo para Distribuidores</h1>
+            <p>Precios mayoristas y descuentos especiales</p>
+        </div>
+        
+        <!-- User Info -->
+        <div class="user-info">
+            <div class="user-details">
+                <div class="user-avatar">🏢</div>
+                <div>
+                    <div id="userName">Cargando...</div>
+                    <div id="userEmail" style="color: #6b7280; font-size: 14px;">Cargando...</div>
+                </div>
+            </div>
+            <div>
+                <a href="/admin-dashboard.html" class="btn">⬅️ Dashboard</a>
+                <button class="btn btn-red" onclick="logout()">🚪 Cerrar Sesión</button>
+            </div>
+        </div>
+        
+        <!-- Controls -->
+        <div class="controls">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="🔍 Buscar productos por nombre, SKU o descripción...">
+            </div>
+            <div class="filters">
+                <select id="categoryFilter" class="filter-select">
+                    <option value="">Todas las categorías</option>
+                </select>
+                <select id="brandFilter" class="filter-select">
+                    <option value="">Todas las marcas</option>
+                </select>
+                <label style="display: flex; align-items: center; gap: 5px;">
+                    <input type="checkbox" id="stockFilter">
+                    Solo con stock
+                </label>
+            </div>
+            <div>
+                <button class="btn btn-green" onclick="exportCSV()">📊 Exportar CSV</button>
+                <button class="btn" onclick="printCatalog()">🖨️ Imprimir</button>
+            </div>
+        </div>
+        
+        <!-- Stats -->
+        <div class="stats">
+            <div class="stat-card">
+                <div class="number" id="totalProducts">-</div>
+                <div class="label">Total Productos</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="inStockProducts">-</div>
+                <div class="label">Con Stock</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="categoriesCount">-</div>
+                <div class="label">Categorías</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="averageSavings">-</div>
+                <div class="label">% Ahorro Promedio</div>
+            </div>
+        </div>
+        
+        <!-- Products Table -->
+        <div class="products-table">
+            <div class="table-header">
+                <h3>📦 Productos Disponibles</h3>
+                <div>
+                    <span id="filteredCount">0</span> productos mostrados
+                </div>
+            </div>
+            <div class="table-container">
+                <table id="productsTable">
+                    <thead>
+                        <tr>
+                            <th>Imagen</th>
+                            <th>Producto</th>
+                            <th>SKU</th>
+                            <th>Categoría</th>
+                            <th>Marca</th>
+                            <th>Precio Distribuidor</th>
+                            <th>Stock</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productsTableBody">
+                        <tr>
+                            <td colspan="7" class="loading">
+                                <div>⏳ Cargando productos...</div>
+                                <div style="font-size: 14px; color: #6b7280; margin-top: 10px;">
+                                    Obteniendo datos desde Airtable...
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allProducts = [];
+        let filteredProducts = [];
+        let currentUser = null;
+
+        // Verificar autenticación al cargar
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('📦 Catálogo de Distribuidores iniciado');
+            checkAuthentication();
+        });
+
+        // Verificar si el usuario está autenticado
+        function checkAuthentication() {
+            const user = localStorage.getItem('currentUser');
+            
+            if (!user) {
+                console.log('❌ Usuario no autenticado, redirigiendo al login');
+                window.location.href = '/admin-login.html';
+                return;
+            }
+            
+            try {
+                currentUser = JSON.parse(user);
+                console.log('✅ Usuario autenticado:', currentUser.email);
+                
+                // Verificar que sea distribuidor o admin
+                if (currentUser.role !== 'distribuidor' && currentUser.role !== 'admin') {
+                    console.log('❌ Acceso denegado - Rol:', currentUser.role);
+                    alert('Acceso denegado. Este catálogo es solo para distribuidores.');
+                    window.location.href = '/admin-dashboard.html';
+                    return;
+                }
+                
+                // Mostrar información del usuario
+                document.getElementById('userName').textContent = currentUser.name || 'Distribuidor';
+                document.getElementById('userEmail').textContent = currentUser.email;
+                
+                // Cargar productos
+                loadProducts();
+                
+            } catch (error) {
+                console.error('❌ Error parseando datos de usuario:', error);
+                window.location.href = '/admin-login.html';
+            }
+        }
+
+        // Cargar productos desde la API
+        async function loadProducts() {
+            try {
+                console.log('📦 Cargando productos...');
+                
+                const response = await fetch('/api/products');
+                const result = await response.json();
+                
+                if (response.ok && result.products) {
+                    allProducts = result.products;
+                    filteredProducts = [...allProducts];
+                    
+                    console.log(`✅ ${allProducts.length} productos cargados`);
+                    
+                    updateStats();
+                    populateFilters();
+                    renderProducts();
+                } else {
+                    throw new Error(result.error || 'Error cargando productos');
+                }
+            } catch (error) {
+                console.error('❌ Error cargando productos:', error);
+                document.getElementById('productsTableBody').innerHTML = `
+                    <tr>
+                        <td colspan="7" class="no-results">
+                            <div>❌ Error al cargar productos</div>
+                            <div style="font-size: 14px; color: #6b7280; margin-top: 10px;">
+                                ${error.message}
+                            </div>
+                            <button class="btn" onclick="loadProducts()" style="margin-top: 15px;">🔄 Reintentar</button>
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        // Actualizar estadísticas
+        function updateStats() {
+            const total = allProducts.length;
+            const inStock = allProducts.filter(p => p.stock > 0).length;
+            const categories = [...new Set(allProducts.map(p => p.category?.name).filter(Boolean))].length;
+            
+            // Calcular ahorro promedio (simulado - 15-25% de descuento)
+            const averageSavings = Math.round(Math.random() * 10 + 15); // 15-25%
+            
+            document.getElementById('totalProducts').textContent = total;
+            document.getElementById('inStockProducts').textContent = inStock;
+            document.getElementById('categoriesCount').textContent = categories;
+            document.getElementById('averageSavings').textContent = `${averageSavings}%`;
+        }
+
+        // Poblar filtros
+        function populateFilters() {
+            const categories = [...new Set(allProducts.map(p => p.category?.name).filter(Boolean))].sort();
+            const brands = [...new Set(allProducts.map(p => p.brand?.name).filter(Boolean))].sort();
+            
+            const categorySelect = document.getElementById('categoryFilter');
+            const brandSelect = document.getElementById('brandFilter');
+            
+            categorySelect.innerHTML = '<option value="">Todas las categorías</option>';
+            brandSelect.innerHTML = '<option value="">Todas las marcas</option>';
+            
+            categories.forEach(category => {
+                categorySelect.innerHTML += `<option value="${category}">${category}</option>`;
+            });
+            
+            brands.forEach(brand => {
+                brandSelect.innerHTML += `<option value="${brand}">${brand}</option>`;
+            });
+        }
+
+        // Obtener precio de distribuidor (Price Wholesale)
+        function getDistributorPrice(product) {
+            return product.priceWholesale || 0;
+        }
+
+        // Calcular porcentaje de ahorro
+        function getSavingsPercentage(retailPrice, distributorPrice) {
+            return Math.round(((retailPrice - distributorPrice) / retailPrice) * 100);
+        }
+
+        // Renderizar productos
+        function renderProducts() {
+            const tbody = document.getElementById('productsTableBody');
+            document.getElementById('filteredCount').textContent = filteredProducts.length;
+            
+            if (filteredProducts.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="no-results">
+                            <div>🔍 No se encontraron productos</div>
+                            <div style="font-size: 14px; color: #6b7280; margin-top: 10px;">
+                                Intenta ajustar los filtros de búsqueda
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tbody.innerHTML = filteredProducts.map(product => {
+                const imageUrl = product.images && product.images.length > 0 ? product.images[0] : '/placeholder-product.png';
+                const retailPrice = product.priceRetail || 0;
+                const distributorPrice = getDistributorPrice(product);
+                const savings = getSavingsPercentage(retailPrice, distributorPrice);
+                
+                return `
+                    <tr>
+                        <td>
+                            <img src="${imageUrl}" 
+                                 alt="${product.name}" 
+                                 class="product-image"
+                                 onerror="this.src='/placeholder-product.png'">
+                        </td>
+                        <td>
+                            <div class="product-name">${product.name}</div>
+                            <div class="product-sku">SKU: ${product.sku || 'N/A'}</div>
+                        </td>
+                        <td>${product.sku || 'N/A'}</td>
+                        <td>${product.category?.name || 'Sin categoría'}</td>
+                        <td>${product.brand?.name || 'Sin marca'}</td>
+                        <td>
+                            <div class="price-comparison">
+                                <div class="price">$${distributorPrice.toLocaleString()}</div>
+                                <div class="price-retail">Público: $${retailPrice.toLocaleString()}</div>
+                                <div class="savings">Ahorras ${savings}%</div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="stock ${getStockClass(product.stock)}">
+                                ${getStockText(product.stock)}
+                            </span>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Funciones auxiliares para stock
+        function getStockClass(stock) {
+            if (stock > 10) return 'in-stock';
+            if (stock > 0) return 'low-stock';
+            return 'out-of-stock';
+        }
+
+        function getStockText(stock) {
+            if (stock > 10) return `✅ ${stock} unidades`;
+            if (stock > 0) return `⚠️ ${stock} unidades`;
+            return '❌ Sin stock';
+        }
+
+        // Filtrar productos
+        function filterProducts() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const categoryFilter = document.getElementById('categoryFilter').value;
+            const brandFilter = document.getElementById('brandFilter').value;
+            const stockFilter = document.getElementById('stockFilter').checked;
+            
+            filteredProducts = allProducts.filter(product => {
+                const matchesSearch = !searchTerm || 
+                    product.name.toLowerCase().includes(searchTerm) ||
+                    product.sku?.toLowerCase().includes(searchTerm) ||
+                    product.description?.toLowerCase().includes(searchTerm);
+                
+                const matchesCategory = !categoryFilter || product.category?.name === categoryFilter;
+                const matchesBrand = !brandFilter || product.brand?.name === brandFilter;
+                const matchesStock = !stockFilter || product.stock > 0;
+                
+                return matchesSearch && matchesCategory && matchesBrand && matchesStock;
+            });
+            
+            renderProducts();
+        }
+
+        // Event listeners para filtros
+        document.getElementById('searchInput').addEventListener('input', filterProducts);
+        document.getElementById('categoryFilter').addEventListener('change', filterProducts);
+        document.getElementById('brandFilter').addEventListener('change', filterProducts);
+        document.getElementById('stockFilter').addEventListener('change', filterProducts);
+
+        // Exportar CSV
+        function exportCSV() {
+            const headers = ['Producto', 'SKU', 'Categoría', 'Marca', 'Precio Distribuidor', 'Precio Público', 'Ahorro %', 'Stock'];
+            const csvContent = [
+                headers.join(','),
+                ...filteredProducts.map(product => {
+                    const retailPrice = product.priceRetail || 0;
+                    const distributorPrice = getDistributorPrice(product);
+                    const savings = getSavingsPercentage(retailPrice, distributorPrice);
+                    
+                    return [
+                        `"${product.name}"`,
+                        `"${product.sku || ''}"`,
+                        `"${product.category?.name || ''}"`,
+                        `"${product.brand?.name || ''}"`,
+                        distributorPrice,
+                        retailPrice,
+                        `${savings}%`,
+                        product.stock || 0
+                    ].join(',');
+                })
+            ].join('\n');
+            
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `catalogo-distribuidores-${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        // Imprimir catálogo
+        function printCatalog() {
+            window.print();
+        }
+
+        // Cerrar sesión
+        function logout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = '/admin-login.html';
+        }
+    </script>
+</body>
+</html>

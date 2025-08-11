@@ -8,23 +8,53 @@ import { CarIcon } from '@/components/icons/Icons';
 export const revalidate = 300; // Revalidar cada 5 minutos
 
 export default async function HomePage() {
-  // Obtener datos reales desde APIs internas (usar URL absoluta para SSR/ISR)
-  const baseURL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3002';
   let featuredProducts: any[] = [];
 
   try {
-    // Obtener productos destacados desde el endpoint específico
-    const featuredRes = await fetch(`${baseURL}/api/products/featured`, { cache: 'no-store' });
-    const featuredJson = featuredRes?.ok ? await featuredRes.json().catch(() => ({ products: [] })) : { products: [] };
+    // Usar URL relativa para evitar problemas de puerto en desarrollo
+    // Next.js manejará esto correctamente tanto en desarrollo como en producción
+    const featuredRes = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3003'}/api/products/featured`, { 
+      cache: 'no-store',
+      headers: {
+        'Accept': 'application/json',
+      }
+    });
+    
+    if (!featuredRes.ok) {
+      throw new Error(`HTTP ${featuredRes.status}: ${featuredRes.statusText}`);
+    }
+    
+    const featuredJson = await featuredRes.json();
     featuredProducts = Array.isArray(featuredJson?.products) ? featuredJson.products : [];
     
-    console.log(`🌟 Productos destacados obtenidos: ${featuredProducts.length}`);
-    console.log(`🌟 Productos destacados:`, featuredProducts.map(p => p.name).join(', '));
-    console.log(`🌟 Array completo de productos:`, JSON.stringify(featuredProducts.map(p => ({name: p.name, id: p.id})), null, 2));
+    console.log(`🌟 [HomePage] Productos destacados obtenidos: ${featuredProducts.length}`);
+    if (featuredProducts.length > 0) {
+      console.log(`🌟 [HomePage] Productos:`, featuredProducts.map(p => p.name).join(', '));
+    } else {
+      console.warn(`⚠️ [HomePage] No se encontraron productos destacados`);
+    }
   } catch (e) {
-    console.error('❌ Error cargando productos destacados:', e);
-    // En caso de cualquier error, mantener arrays vacíos para no romper la Home
-    featuredProducts = [];
+    console.error('❌ [HomePage] Error cargando productos destacados:', e);
+    // Fallback: intentar obtener algunos productos regulares como destacados
+    try {
+      console.log('🔄 [HomePage] Intentando fallback con productos regulares...');
+      const fallbackRes = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3003'}/api/products?limit=6`, { 
+        cache: 'no-store',
+        headers: {
+          'Accept': 'application/json',
+        }
+      });
+      
+      if (fallbackRes.ok) {
+        const fallbackJson = await fallbackRes.json();
+        const allProducts = Array.isArray(fallbackJson?.products) ? fallbackJson.products : [];
+        featuredProducts = allProducts.slice(0, 6); // Tomar los primeros 6 como destacados
+        console.log(`🔄 [HomePage] Fallback exitoso: ${featuredProducts.length} productos`);
+      }
+    } catch (fallbackError) {
+      console.error('❌ [HomePage] Fallback también falló:', fallbackError);
+      featuredProducts = [];
+    }
   }
 
   return (
