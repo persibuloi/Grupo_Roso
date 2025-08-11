@@ -1,3 +1,5 @@
+'use client';
+
 export default function BasicAdminPanel() {
   return (
     <div style={{ 

@@ -1,10 +1,10 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { loginUser } from '@/lib/supabase'
 
-export default function LoginBypassPage() {
+function LoginBypassContent() {
   const [status, setStatus] = useState('Procesando...')
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -160,5 +160,33 @@ export default function LoginBypassPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function LoginBypassPage() {
+  return (
+    <Suspense fallback={
+      <div style={{ 
+        padding: '50px', 
+        fontFamily: 'Arial, sans-serif',
+        maxWidth: '600px',
+        margin: '0 auto',
+        textAlign: 'center'
+      }}>
+        <h1 style={{ color: '#dc2626', marginBottom: '30px' }}>
+          🚀 Grupo Rosso - Login Rápido
+        </h1>
+        <div style={{ 
+          backgroundColor: '#f0f0f0', 
+          padding: '20px', 
+          borderRadius: '8px',
+          marginBottom: '30px'
+        }}>
+          <h2>Cargando...</h2>
+        </div>
+      </div>
+    }>
+      <LoginBypassContent />
+    </Suspense>
   )
 }

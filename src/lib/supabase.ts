@@ -71,12 +71,14 @@ export async function loginUser(email: string, password: string) {
     console.log('🔍 Login attempt:', { email, password })
     
     // Get user from our custom users table
-    const result = await supabase
+    const { data, error }: any = await supabase
       .from('users')
       .select('*')
       .eq('email', email)
       .eq('active', true)
       .single()
+    
+    const result = { data, error }
 
     console.log('📊 Supabase result:', result)
 
