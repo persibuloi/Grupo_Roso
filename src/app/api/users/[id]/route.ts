@@ -33,8 +33,9 @@ async function makeRequest(url: string, options: any = {}) {
 // PUT - Update user
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
+  const params = await context.params;
   try {
     const body = await request.json()
     const { email, name, password, role, active } = body
@@ -80,8 +81,9 @@ export async function PUT(
 // DELETE - Delete user
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
+  const params = await context.params;
   try {
     const userId = params.id
 
@@ -110,8 +112,9 @@ export async function DELETE(
 // GET - Get single user
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
+  const params = await context.params;
   try {
     const userId = params.id
 

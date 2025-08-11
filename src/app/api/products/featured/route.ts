@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
     console.log(`🌟 [${timestamp}] Registros activos encontrados: ${records.length}`);
     
     // Filtrar productos destacados en el código si el campo existe
-    const featuredRecords = records.filter(record => {
+    const featuredRecords = records.filter((record: any) => {
       const fields = record.fields;
       return fields.Destacado === true || fields.Featured === true;
     });
